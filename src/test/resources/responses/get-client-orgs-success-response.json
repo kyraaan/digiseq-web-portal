@@ -1,0 +1,19 @@
+[
+  {
+    "clientOrgId": 123,
+    "name": "client name 1",
+    "registeredDate": "2020-07-21",
+    "expiryDate": "2020-08-21",
+    "isEnabled": true,
+    "personnel": [
+      {
+        "personnelId": 456,
+        "username": "fjones",
+        "firstName": "fred",
+        "lastName": "jones",
+        "email": "fjones@email.com",
+        "phoneNumber": "0123456789"
+      }
+    ]
+  }
+]
