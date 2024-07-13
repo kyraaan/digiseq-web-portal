@@ -1,0 +1,15 @@
+{
+  "name": "client name 1",
+  "registeredDate": "2020-07-21",
+  "expiryDate": "2020-08-21",
+  "personnel": [
+    {
+      "username": "fjones",
+      "password": "password",
+      "firstName": "fred",
+      "lastName": "jones",
+      "email": "fjones@email.com",
+      "phoneNumber": "0123456789"
+    }
+  ]
+}

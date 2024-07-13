@@ -4,12 +4,16 @@ import static com.digiseq.digiseqwebportal.util.JsonLoader.loadJsonFromFile;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.http.MediaType.APPLICATION_JSON;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.digiseq.digiseqwebportal.configuration.clientorg.ClientOrgWebConfiguration;
+import com.digiseq.digiseqwebportal.controller.model.AddClientOrgRequest;
 import com.digiseq.digiseqwebportal.exception.ClientOrgNotFoundException;
 import com.digiseq.digiseqwebportal.model.ClientOrg;
 import com.digiseq.digiseqwebportal.model.Personnel;
@@ -39,6 +43,11 @@ class ClientOrgControllerTest {
       "responses/error/get-client-org-not-found-response.json";
   private static final String UNKNOWN_ERROR_RESPONSE_JSON =
       "responses/error/unknown-error-response.json";
+  private static final String ADD_CLIENT_ORG_REQUEST_JSON = "requests/add-client-org-request.json";
+  private static final String INVALID_ADD_CLIENT_ORG_REQUEST_JSON =
+      "requests/invalid-add-client-org-request.json";
+  public static final String ADD_CLIENT_ORG_INVALID_INPUT_RESPONSE_JSON =
+      "responses/error/add-client-org-validation-error-response.json";
 
   @Autowired MockMvc mvc;
 
@@ -112,6 +121,30 @@ class ClientOrgControllerTest {
         .andDo(print())
         .andExpect(status().isInternalServerError())
         .andExpect(content().json(loadJsonFromFile(UNKNOWN_ERROR_RESPONSE_JSON)));
+  }
+
+  @Test
+  void shouldAddClientOrg() throws Exception {
+    AddClientOrgRequest addClientOrgRequest = AddClientOrgRequest.builder().build();
+    doNothing().when(clientOrgService).saveClientOrg(addClientOrgRequest);
+
+    mvc.perform(
+            post(CLIENT_ORG_URI_PATH)
+                .contentType(APPLICATION_JSON)
+                .content(loadJsonFromFile(ADD_CLIENT_ORG_REQUEST_JSON)))
+        .andDo(print())
+        .andExpect(status().isNoContent());
+  }
+
+  @Test
+  void shouldThrow400WhenAddingClientOrg_givenInvalidRequest() throws Exception {
+    mvc.perform(
+            post(CLIENT_ORG_URI_PATH)
+                .contentType(APPLICATION_JSON)
+                .content(loadJsonFromFile(INVALID_ADD_CLIENT_ORG_REQUEST_JSON)))
+        .andDo(print())
+        .andExpect(status().isBadRequest())
+        .andExpect(content().json(loadJsonFromFile(ADD_CLIENT_ORG_INVALID_INPUT_RESPONSE_JSON)));
   }
 
   private static List<ClientOrg> clientOrgs() {

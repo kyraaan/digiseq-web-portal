@@ -3,10 +3,12 @@ package com.digiseq.digiseqwebportal.controller;
 import static java.lang.Long.parseLong;
 
 import com.digiseq.digiseqwebportal.controller.converter.ClientOrgMapper;
+import com.digiseq.digiseqwebportal.controller.model.AddClientOrgRequest;
 import com.digiseq.digiseqwebportal.controller.model.ClientOrgResponse;
 import com.digiseq.digiseqwebportal.controller.validation.ValidClientOrgId;
 import com.digiseq.digiseqwebportal.model.ClientOrg;
 import com.digiseq.digiseqwebportal.service.ClientOrgService;
+import jakarta.validation.Valid;
 import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +16,8 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -42,6 +46,13 @@ public class ClientOrgController {
     ClientOrgResponse response = mapper.toResponse(clientOrg);
 
     return new ResponseEntity<>(response, HttpStatus.OK);
+  }
+
+  @PostMapping("/clientOrgs")
+  ResponseEntity<Void> addClientOrg(@RequestBody @Valid AddClientOrgRequest request) {
+    clientOrgService.saveClientOrg(request);
+
+    return ResponseEntity.noContent().build();
   }
 
   @DeleteMapping("/clientOrgs/{clientOrgId}")

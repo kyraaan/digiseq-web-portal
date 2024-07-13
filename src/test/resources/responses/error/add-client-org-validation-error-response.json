@@ -1,0 +1,15 @@
+{
+  "statusCode": 400,
+  "message": "Validation error",
+  "errors": {
+    "expiryDate": "expiryDate cannot be null",
+    "personnel[0].phoneNumber": "phoneNumber cannot be empty",
+    "registeredDate": "registeredDate cannot be null",
+    "personnel[0].lastName": "lastName cannot be empty",
+    "personnel[0].email": "email cannot be empty",
+    "personnel[0].username": "username cannot be empty",
+    "name": "name cannot be empty",
+    "personnel[0].password": "password cannot be empty",
+    "personnel[0].firstName": "firstName cannot be empty"
+  }
+}

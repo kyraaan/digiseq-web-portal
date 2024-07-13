@@ -1,0 +1,15 @@
+{
+  "name": "",
+  "registeredDate": null,
+  "expiryDate": null,
+  "personnel": [
+    {
+      "username": null,
+      "password": null,
+      "firstName": null,
+      "lastName": null,
+      "email": "",
+      "phoneNumber": null
+    }
+  ]
+}
