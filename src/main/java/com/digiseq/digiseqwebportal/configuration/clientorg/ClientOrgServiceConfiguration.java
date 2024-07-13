@@ -9,6 +9,6 @@ public class ClientOrgServiceConfiguration {
 
   @Bean
   ClientOrgService clientOrgService() {
-    return new ClientOrgService();
+    return new ClientOrgService(null);
   }
 }
