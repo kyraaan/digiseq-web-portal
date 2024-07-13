@@ -2,16 +2,18 @@ package com.digiseq.digiseqwebportal.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
 
 import com.digiseq.digiseqwebportal.exception.ClientOrgNotFoundException;
 import com.digiseq.digiseqwebportal.exception.ClientOrgServiceException;
 import com.digiseq.digiseqwebportal.model.ClientOrg;
+import com.digiseq.digiseqwebportal.repository.ClientOrgRepository;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-
-import com.digiseq.digiseqwebportal.repository.ClientOrgRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -92,5 +94,25 @@ class ClientOrgServiceTest {
     assertThat(error)
         .isInstanceOf(ClientOrgServiceException.class)
         .hasMessage("Failed to retrieve client org with id: 123");
+  }
+
+  @Test
+  void shouldDeleteClientOrgById() {
+    doNothing().when(repository).deleteClientOrgById(CLIENT_ORG_ID);
+
+    assertDoesNotThrow(() -> service.deleteClientOrgById(CLIENT_ORG_ID));
+  }
+
+  @Test
+  void shouldThrowServiceExceptionWhenDeletingClientOrg_givenFailureToDelete() {
+    doThrow(new RuntimeException("delete error"))
+        .when(repository)
+        .deleteClientOrgById(CLIENT_ORG_ID);
+
+    Throwable error = catchThrowable(() -> service.deleteClientOrgById(CLIENT_ORG_ID));
+
+    assertThat(error)
+        .isInstanceOf(ClientOrgServiceException.class)
+        .hasMessage("Failed to delete client org with id: 123");
   }
 }

@@ -9,4 +9,6 @@ public interface ClientOrgRepository {
   List<ClientOrg> getClientOrgs();
 
   Optional<ClientOrg> getClientOrgById(Long clientOrgId);
+
+  void deleteClientOrgById(Long clientOrgId);
 }

@@ -2,6 +2,8 @@ package com.digiseq.digiseqwebportal.controller;
 
 import static com.digiseq.digiseqwebportal.util.JsonLoader.loadJsonFromFile;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -89,6 +91,27 @@ class ClientOrgControllerTest {
         .andDo(print())
         .andExpect(status().isNotFound())
         .andExpect(content().json(loadJsonFromFile(CLIENT_ORG_NOT_FOUND_RESPONSE_JSON)));
+  }
+
+  @Test
+  void shouldDeleteClientOrgById() throws Exception {
+    doNothing().when(clientOrgService).deleteClientOrgById(CLIENT_ORG_ID);
+
+    mvc.perform(delete(CLIENT_ORG_BY_ID_URI_PATH, CLIENT_ORG_ID))
+        .andDo(print())
+        .andExpect(status().isNoContent());
+  }
+
+  @Test
+  void shouldThrow500WhenDeletingClientOrg_givenUnknownException() throws Exception {
+    doThrow(new RuntimeException("unexpected error"))
+        .when(clientOrgService)
+        .deleteClientOrgById(CLIENT_ORG_ID);
+
+    mvc.perform(delete(CLIENT_ORG_BY_ID_URI_PATH, CLIENT_ORG_ID))
+        .andDo(print())
+        .andExpect(status().isInternalServerError())
+        .andExpect(content().json(loadJsonFromFile(UNKNOWN_ERROR_RESPONSE_JSON)));
   }
 
   private static List<ClientOrg> clientOrgs() {

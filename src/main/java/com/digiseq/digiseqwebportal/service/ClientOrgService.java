@@ -38,6 +38,15 @@ public class ClientOrgService {
     }
   }
 
+  public void deleteClientOrgById(Long clientOrgId) {
+    try {
+      repository.deleteClientOrgById(clientOrgId);
+    } catch (Exception e) {
+      throw new ClientOrgServiceException(
+          format("Failed to delete client org with id: %s", clientOrgId), e);
+    }
+  }
+
   private ClientOrg getClientOrg(Long clientOrgId) {
     return repository
         .getClientOrgById(clientOrgId)
