@@ -8,4 +8,6 @@ import org.mapstruct.Mapper;
 @Mapper
 public interface ClientOrgMapper {
   List<ClientOrgResponse> toResponse(List<ClientOrg> clientOrgs);
+
+  ClientOrgResponse toResponse(ClientOrg clientOrg);
 }
