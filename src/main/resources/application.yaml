@@ -1,0 +1,4 @@
+spring:
+  application.name: digiseq-web-portal
+server:
+  port: 8090
