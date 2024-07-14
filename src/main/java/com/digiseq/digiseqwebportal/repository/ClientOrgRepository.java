@@ -13,4 +13,6 @@ public interface ClientOrgRepository {
   void deleteClientOrgById(Long clientOrgId);
 
   void saveClientOrg(ClientOrg clientOrg);
+
+  void updateClientOrg(ClientOrg clientOrg);
 }

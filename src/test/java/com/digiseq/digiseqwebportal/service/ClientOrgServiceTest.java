@@ -7,12 +7,11 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 
-import com.digiseq.digiseqwebportal.controller.model.AddClientOrgRequest;
-import com.digiseq.digiseqwebportal.controller.model.AddPersonnelRequest;
+import com.digiseq.digiseqwebportal.controller.model.request.AddClientOrgRequest;
+import com.digiseq.digiseqwebportal.controller.model.request.UpdateClientOrgRequest;
 import com.digiseq.digiseqwebportal.exception.ClientOrgNotFoundException;
 import com.digiseq.digiseqwebportal.exception.ClientOrgServiceException;
 import com.digiseq.digiseqwebportal.model.ClientOrg;
-import com.digiseq.digiseqwebportal.model.Personnel;
 import com.digiseq.digiseqwebportal.repository.ClientOrgRepository;
 import java.time.LocalDate;
 import java.util.Collections;
@@ -121,7 +120,7 @@ class ClientOrgServiceTest {
   }
 
   @Test
-  void shouldSaveClient() {
+  void shouldSaveClientOrg() {
     ClientOrg clientOrg = clientOrg();
 
     assertDoesNotThrow(() -> service.saveClientOrg(addClientOrgRequest()));
@@ -140,21 +139,32 @@ class ClientOrgServiceTest {
         .hasMessage("Failed to save client org");
   }
 
+  @Test
+  void shouldUpdateClientOrg() {
+    ClientOrg clientOrg = clientOrg();
+
+    assertDoesNotThrow(() -> service.updateClientOrg(CLIENT_ORG_ID, updateClientOrgRequest()));
+
+    verify(repository).updateClientOrg(clientOrg);
+  }
+
+  @Test
+  void shouldThrowServiceException_givenFailureToUpdateClientOrg() {
+    doThrow(new RuntimeException("update error")).when(repository).updateClientOrg(clientOrg());
+
+    Throwable error =
+        catchThrowable(() -> service.updateClientOrg(CLIENT_ORG_ID, updateClientOrgRequest()));
+
+    assertThat(error)
+        .isInstanceOf(ClientOrgServiceException.class)
+        .hasMessage("Failed to update client org");
+  }
+
   private static ClientOrg clientOrg() {
     return ClientOrg.builder()
         .name("client name 1")
         .registeredDate(LocalDate.of(2020, 7, 21))
         .expiryDate(LocalDate.of(2020, 8, 21))
-        .personnel(
-            List.of(
-                Personnel.builder()
-                    .firstName("fred")
-                    .lastName("jones")
-                    .username("fjones")
-                    .password("password")
-                    .email("fjones@email.com")
-                    .phoneNumber("0123456789")
-                    .build()))
         .build();
   }
 
@@ -163,16 +173,14 @@ class ClientOrgServiceTest {
         .name("client name 1")
         .registeredDate(LocalDate.of(2020, 7, 21))
         .expiryDate(LocalDate.of(2020, 8, 21))
-        .personnel(
-            List.of(
-                AddPersonnelRequest.builder()
-                    .firstName("fred")
-                    .lastName("jones")
-                    .username("fjones")
-                    .password("password")
-                    .email("fjones@email.com")
-                    .phoneNumber("0123456789")
-                    .build()))
+        .build();
+  }
+
+  private static UpdateClientOrgRequest updateClientOrgRequest() {
+    return UpdateClientOrgRequest.builder()
+        .name("client name 1")
+        .registeredDate(LocalDate.of(2020, 7, 21))
+        .expiryDate(LocalDate.of(2020, 8, 21))
         .build();
   }
 }

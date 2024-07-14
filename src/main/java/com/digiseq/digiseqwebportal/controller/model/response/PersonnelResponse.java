@@ -1,4 +1,4 @@
-package com.digiseq.digiseqwebportal.controller.model;
+package com.digiseq.digiseqwebportal.controller.model.response;
 
 import lombok.Builder;
 

@@ -2,21 +2,23 @@ package com.digiseq.digiseqwebportal.controller;
 
 import static com.digiseq.digiseqwebportal.util.JsonLoader.loadJsonFromFile;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.digiseq.digiseqwebportal.configuration.clientorg.ClientOrgWebConfiguration;
-import com.digiseq.digiseqwebportal.controller.model.AddClientOrgRequest;
+import com.digiseq.digiseqwebportal.controller.model.request.AddClientOrgRequest;
+import com.digiseq.digiseqwebportal.controller.model.request.UpdateClientOrgRequest;
 import com.digiseq.digiseqwebportal.exception.ClientOrgNotFoundException;
 import com.digiseq.digiseqwebportal.model.ClientOrg;
-import com.digiseq.digiseqwebportal.model.Personnel;
 import com.digiseq.digiseqwebportal.service.ClientOrgService;
 import java.time.LocalDate;
 import java.util.List;
@@ -32,7 +34,11 @@ import org.springframework.test.web.servlet.MockMvc;
 class ClientOrgControllerTest {
   private static final String CLIENT_ORG_URI_PATH = "/clientOrgs";
   private static final String CLIENT_ORG_BY_ID_URI_PATH = "/clientOrgs/{clientOrgId}";
+  private static final String CLIENT_NAME = "client name 1";
   private static final long CLIENT_ORG_ID = 123L;
+  private static final LocalDate REGISTERED_DATE = LocalDate.of(2020, 7, 21);
+  private static final LocalDate EXPIRY_DATE = LocalDate.of(2020, 8, 21);
+
   private static final String GET_CLIENT_ORGS_SUCCESS_JSON =
       "responses/get-client-orgs-success-response.json";
   private static final String GET_CLIENT_ORG_BY_ID_SUCCESS_JSON =
@@ -44,9 +50,11 @@ class ClientOrgControllerTest {
   private static final String UNKNOWN_ERROR_RESPONSE_JSON =
       "responses/error/unknown-error-response.json";
   private static final String ADD_CLIENT_ORG_REQUEST_JSON = "requests/add-client-org-request.json";
+  private static final String UPDATE_CLIENT_ORG_REQUEST_JSON =
+      "requests/update-client-org-request.json";
   private static final String INVALID_ADD_CLIENT_ORG_REQUEST_JSON =
       "requests/invalid-add-client-org-request.json";
-  public static final String ADD_CLIENT_ORG_INVALID_INPUT_RESPONSE_JSON =
+  private static final String ADD_CLIENT_ORG_INVALID_INPUT_RESPONSE_JSON =
       "responses/error/add-client-org-validation-error-response.json";
 
   @Autowired MockMvc mvc;
@@ -89,6 +97,8 @@ class ClientOrgControllerTest {
         .andDo(print())
         .andExpect(status().isBadRequest())
         .andExpect(content().json(loadJsonFromFile(INVALID_CLIENT_ORG_ID_RESPONSE_JSON)));
+
+    verifyNoInteractions(clientOrgService);
   }
 
   @Test
@@ -104,11 +114,11 @@ class ClientOrgControllerTest {
 
   @Test
   void shouldDeleteClientOrgById() throws Exception {
-    doNothing().when(clientOrgService).deleteClientOrgById(CLIENT_ORG_ID);
-
     mvc.perform(delete(CLIENT_ORG_BY_ID_URI_PATH, CLIENT_ORG_ID))
         .andDo(print())
         .andExpect(status().isNoContent());
+
+    verify(clientOrgService).deleteClientOrgById(CLIENT_ORG_ID);
   }
 
   @Test
@@ -125,15 +135,20 @@ class ClientOrgControllerTest {
 
   @Test
   void shouldAddClientOrg() throws Exception {
-    AddClientOrgRequest addClientOrgRequest = AddClientOrgRequest.builder().build();
-    doNothing().when(clientOrgService).saveClientOrg(addClientOrgRequest);
-
+    var request =
+        AddClientOrgRequest.builder()
+            .name(CLIENT_NAME)
+            .registeredDate(REGISTERED_DATE)
+            .expiryDate(EXPIRY_DATE)
+            .build();
     mvc.perform(
             post(CLIENT_ORG_URI_PATH)
                 .contentType(APPLICATION_JSON)
                 .content(loadJsonFromFile(ADD_CLIENT_ORG_REQUEST_JSON)))
         .andDo(print())
         .andExpect(status().isNoContent());
+
+    verify(clientOrgService).saveClientOrg(request);
   }
 
   @Test
@@ -145,6 +160,40 @@ class ClientOrgControllerTest {
         .andDo(print())
         .andExpect(status().isBadRequest())
         .andExpect(content().json(loadJsonFromFile(ADD_CLIENT_ORG_INVALID_INPUT_RESPONSE_JSON)));
+
+    verifyNoInteractions(clientOrgService);
+  }
+
+  @Test
+  void shouldUpdateClientOrg() throws Exception {
+    var request =
+        UpdateClientOrgRequest.builder()
+            .name(CLIENT_NAME)
+            .registeredDate(REGISTERED_DATE)
+            .expiryDate(EXPIRY_DATE)
+            .build();
+
+    mvc.perform(
+            patch(CLIENT_ORG_BY_ID_URI_PATH, CLIENT_ORG_ID)
+                .contentType(APPLICATION_JSON)
+                .content(loadJsonFromFile(UPDATE_CLIENT_ORG_REQUEST_JSON)))
+        .andDo(print())
+        .andExpect(status().isNoContent());
+
+    verify(clientOrgService).updateClientOrg(CLIENT_ORG_ID, request);
+  }
+
+  @Test
+  void shouldThrow400WhenUpdatingClientOrg_givenInvalidClientOrgId() throws Exception {
+    mvc.perform(
+            patch(CLIENT_ORG_BY_ID_URI_PATH, "badClientOrgId")
+                .contentType(APPLICATION_JSON)
+                .content(loadJsonFromFile(UPDATE_CLIENT_ORG_REQUEST_JSON)))
+        .andDo(print())
+        .andExpect(status().isBadRequest())
+        .andExpect(content().json(loadJsonFromFile(INVALID_CLIENT_ORG_ID_RESPONSE_JSON)));
+
+    verifyNoInteractions(clientOrgService);
   }
 
   private static List<ClientOrg> clientOrgs() {
@@ -154,21 +203,10 @@ class ClientOrgControllerTest {
   private static ClientOrg clientOrg() {
     return ClientOrg.builder()
         .clientOrgId(CLIENT_ORG_ID)
-        .name("client name 1")
-        .registeredDate(LocalDate.of(2020, 7, 21))
-        .expiryDate(LocalDate.of(2020, 8, 21))
+        .name(CLIENT_NAME)
+        .registeredDate(REGISTERED_DATE)
+        .expiryDate(EXPIRY_DATE)
         .isEnabled(true)
-        .personnel(
-            List.of(
-                Personnel.builder()
-                    .personnelId(456L)
-                    .firstName("fred")
-                    .lastName("jones")
-                    .username("fjones")
-                    .email("fjones@email.com")
-                    .phoneNumber("0123456789")
-                    .clientOrgId(CLIENT_ORG_ID)
-                    .build()))
         .build();
   }
 }

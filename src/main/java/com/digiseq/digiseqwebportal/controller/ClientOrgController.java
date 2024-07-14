@@ -3,8 +3,9 @@ package com.digiseq.digiseqwebportal.controller;
 import static java.lang.Long.parseLong;
 
 import com.digiseq.digiseqwebportal.controller.converter.ClientOrgMapper;
-import com.digiseq.digiseqwebportal.controller.model.AddClientOrgRequest;
-import com.digiseq.digiseqwebportal.controller.model.ClientOrgResponse;
+import com.digiseq.digiseqwebportal.controller.model.request.AddClientOrgRequest;
+import com.digiseq.digiseqwebportal.controller.model.request.UpdateClientOrgRequest;
+import com.digiseq.digiseqwebportal.controller.model.response.ClientOrgResponse;
 import com.digiseq.digiseqwebportal.controller.validation.ValidClientOrgId;
 import com.digiseq.digiseqwebportal.model.ClientOrg;
 import com.digiseq.digiseqwebportal.service.ClientOrgService;
@@ -15,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -51,6 +53,15 @@ public class ClientOrgController {
   @PostMapping("/clientOrgs")
   ResponseEntity<Void> addClientOrg(@RequestBody @Valid AddClientOrgRequest request) {
     clientOrgService.saveClientOrg(request);
+
+    return ResponseEntity.noContent().build();
+  }
+
+  @PatchMapping("/clientOrgs/{clientOrgId}")
+  ResponseEntity<Void> updateClientOrg(
+      @PathVariable(value = "clientOrgId") @ValidClientOrgId String clientOrgId,
+      @RequestBody @Valid UpdateClientOrgRequest request) {
+    clientOrgService.updateClientOrg(parseLong(clientOrgId), request);
 
     return ResponseEntity.noContent().build();
   }

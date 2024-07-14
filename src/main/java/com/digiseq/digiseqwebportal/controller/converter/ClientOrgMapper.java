@@ -1,6 +1,6 @@
 package com.digiseq.digiseqwebportal.controller.converter;
 
-import com.digiseq.digiseqwebportal.controller.model.ClientOrgResponse;
+import com.digiseq.digiseqwebportal.controller.model.response.ClientOrgResponse;
 import com.digiseq.digiseqwebportal.model.ClientOrg;
 import java.util.List;
 import org.mapstruct.Mapper;
