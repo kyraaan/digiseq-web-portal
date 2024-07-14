@@ -1,0 +1,13 @@
+{
+  "statusCode": 400,
+  "message": "Validation error",
+  "errors": {
+    "firstName": "firstName cannot be empty",
+    "lastName": "lastName cannot be empty",
+    "password": "password cannot be empty",
+    "phoneNumber": "phoneNumber cannot be empty",
+    "clientOrgId": "Invalid clientOrgId",
+    "email": "email cannot be empty",
+    "username": "username cannot be empty"
+  }
+}

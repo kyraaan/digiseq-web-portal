@@ -7,6 +7,7 @@ import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 import com.digiseq.digiseqwebportal.exception.ClientOrgNotFoundException;
+import com.digiseq.digiseqwebportal.exception.PersonnelNotFoundException;
 import com.digiseq.digiseqwebportal.exception.model.ErrorResponse;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
@@ -34,6 +35,13 @@ public class GlobalExceptionHandler {
   @ExceptionHandler(ClientOrgNotFoundException.class)
   public ResponseEntity<ErrorResponse> handleException(ClientOrgNotFoundException e) {
     log.error("Handling ClientOrgNotFoundException: {}", e.getMessage());
+    ErrorResponse errorResponse = new ErrorResponse(NOT_FOUND.value(), e.getMessage());
+    return new ResponseEntity<>(errorResponse, NOT_FOUND);
+  }
+
+  @ExceptionHandler(PersonnelNotFoundException.class)
+  public ResponseEntity<ErrorResponse> handleException(PersonnelNotFoundException e) {
+    log.error("Handling PersonnelNotFoundException: {}", e.getMessage());
     ErrorResponse errorResponse = new ErrorResponse(NOT_FOUND.value(), e.getMessage());
     return new ResponseEntity<>(errorResponse, NOT_FOUND);
   }

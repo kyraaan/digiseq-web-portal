@@ -1,0 +1,10 @@
+[
+  {
+    "personnelId": 234,
+    "username": "fjones",
+    "firstName": "fred",
+    "lastName": "jones",
+    "email": "fjones@email.com",
+    "phoneNumber": "0123456789"
+  }
+]

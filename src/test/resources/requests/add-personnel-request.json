@@ -1,0 +1,9 @@
+{
+  "username": "fjones",
+  "password": "password",
+  "firstName": "fred",
+  "lastName": "jones",
+  "email": "fjones@email.com",
+  "phoneNumber": "0123456789",
+  "clientOrgId": "123"
+}
