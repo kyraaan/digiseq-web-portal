@@ -17,11 +17,10 @@ To start the application locally, follow these steps:
 Unfortunately, jOOQ requires an active database connection, in order to generate the records during compilation.
 So we must first spin up our postgres instance before we can run any maven builds
 
-- `docker-compose up -d --scale app=0` This will start up all dependencies excluding the java app
-- `mvn flyway:migrate`
-- `mvn clean package -DskipTests`
-- `docker build -t digiseq-web-portal .`
-- `docker-compose up app` - And finally bring up the app
+Run the following script:
+```sh
+./startup.sh
+```
 
 Then you should be able to see the health of the service http://localhost:8090/actuator/health
 
@@ -50,3 +49,5 @@ Use these details to connect to the Postgres server:
 The OpenAPI swagger-ui can be found here: http://localhost:8090/swagger-ui/index.html
 
 The API docs can be found here: http://localhost:8090/v3/api-doc
+
+Some sample requests can be found here: - `src/test/resources/requests`
