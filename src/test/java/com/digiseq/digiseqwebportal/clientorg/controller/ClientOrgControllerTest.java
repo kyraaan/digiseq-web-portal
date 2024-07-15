@@ -13,15 +13,14 @@ import static org.mockito.Mockito.verifyNoInteractions;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.digiseq.digiseqwebportal.clientorg.configuration.ClientOrgWebConfiguration;
-import com.digiseq.digiseqwebportal.clientorg.controller.model.request.AddClientOrgRequest;
-import com.digiseq.digiseqwebportal.clientorg.controller.model.request.UpdateClientOrgRequest;
+import com.digiseq.digiseqwebportal.clientorg.controller.model.request.ClientOrgRequest;
 import com.digiseq.digiseqwebportal.clientorg.exception.ClientOrgNotFoundException;
 import com.digiseq.digiseqwebportal.clientorg.service.ClientOrgService;
 import java.util.List;
@@ -49,8 +48,6 @@ class ClientOrgControllerTest {
   private static final String UNKNOWN_ERROR_RESPONSE_JSON =
       "responses/error/unknown-error-response.json";
   private static final String ADD_CLIENT_ORG_REQUEST_JSON = "requests/add-client-org-request.json";
-  private static final String UPDATE_CLIENT_ORG_REQUEST_JSON =
-      "requests/update-client-org-request.json";
   private static final String INVALID_ADD_CLIENT_ORG_REQUEST_JSON =
       "requests/invalid-add-client-org-request.json";
   private static final String ADD_CLIENT_ORG_INVALID_INPUT_RESPONSE_JSON =
@@ -134,12 +131,7 @@ class ClientOrgControllerTest {
 
   @Test
   void shouldAddClientOrg() throws Exception {
-    var request =
-        AddClientOrgRequest.builder()
-            .name(CLIENT_NAME)
-            .registeredDate(REGISTERED_DATE)
-            .expiryDate(EXPIRY_DATE)
-            .build();
+    var request = clientOrgRequest();
     mvc.perform(
             post(CLIENT_ORG_URI_PATH)
                 .contentType(APPLICATION_JSON)
@@ -165,17 +157,12 @@ class ClientOrgControllerTest {
 
   @Test
   void shouldUpdateClientOrg() throws Exception {
-    var request =
-        UpdateClientOrgRequest.builder()
-            .name(CLIENT_NAME)
-            .registeredDate(REGISTERED_DATE)
-            .expiryDate(EXPIRY_DATE)
-            .build();
+    var request = clientOrgRequest();
 
     mvc.perform(
-            patch(CLIENT_ORG_BY_ID_URI_PATH, CLIENT_ORG_ID)
+            put(CLIENT_ORG_BY_ID_URI_PATH, CLIENT_ORG_ID)
                 .contentType(APPLICATION_JSON)
-                .content(loadJsonFromFile(UPDATE_CLIENT_ORG_REQUEST_JSON)))
+                .content(loadJsonFromFile(ADD_CLIENT_ORG_REQUEST_JSON)))
         .andDo(print())
         .andExpect(status().isNoContent());
 
@@ -185,13 +172,21 @@ class ClientOrgControllerTest {
   @Test
   void shouldThrow400WhenUpdatingClientOrg_givenInvalidClientOrgId() throws Exception {
     mvc.perform(
-            patch(CLIENT_ORG_BY_ID_URI_PATH, "badClientOrgId")
+            put(CLIENT_ORG_BY_ID_URI_PATH, "badClientOrgId")
                 .contentType(APPLICATION_JSON)
-                .content(loadJsonFromFile(UPDATE_CLIENT_ORG_REQUEST_JSON)))
+                .content(loadJsonFromFile(ADD_CLIENT_ORG_REQUEST_JSON)))
         .andDo(print())
         .andExpect(status().isBadRequest())
         .andExpect(content().json(loadJsonFromFile(INVALID_CLIENT_ORG_ID_RESPONSE_JSON)));
 
     verifyNoInteractions(clientOrgService);
+  }
+
+  private static ClientOrgRequest clientOrgRequest() {
+    return ClientOrgRequest.builder()
+        .name(CLIENT_NAME)
+        .registeredDate(REGISTERED_DATE)
+        .expiryDate(EXPIRY_DATE)
+        .build();
   }
 }

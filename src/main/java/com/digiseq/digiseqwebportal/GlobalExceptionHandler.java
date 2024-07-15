@@ -1,7 +1,7 @@
 package com.digiseq.digiseqwebportal;
 
 import static java.util.Optional.ofNullable;
-import static java.util.stream.Collectors.toMap;
+import static java.util.stream.Collectors.*;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
@@ -12,7 +12,9 @@ import com.digiseq.digiseqwebportal.exception.model.ErrorResponse;
 import com.digiseq.digiseqwebportal.personnel.exception.PersonnelNotFoundException;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -58,9 +60,9 @@ public class GlobalExceptionHandler {
   public ResponseEntity<ErrorResponse> handleException(MethodArgumentNotValidException e) {
     log.error("Handling MethodArgumentNotValidException: {}", e.getMessage());
 
-    Map<String, String> errors =
-        e.getBindingResult().getFieldErrors().stream()
-            .collect(toMap(FieldError::getField, GlobalExceptionHandler::getDefaultMessage));
+    Map<String, List<String>> errors =
+            e.getBindingResult().getFieldErrors().stream().
+                    collect(groupingBy(FieldError::getField, mapping(GlobalExceptionHandler::getDefaultMessage, toList())));
 
     ErrorResponse errorResponse =
         new ErrorResponse(BAD_REQUEST.value(), DEFAULT_VALIDATION_MESSAGE, errors);

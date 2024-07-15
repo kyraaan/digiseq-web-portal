@@ -1,5 +1,7 @@
 package com.digiseq.digiseqwebportal.personnel.service;
 
+import static com.digiseq.digiseqwebportal.util.TestDataHelper.CLIENT_ORG_ID;
+import static com.digiseq.digiseqwebportal.util.TestDataHelper.PERSONNEL_ID;
 import static com.digiseq.digiseqwebportal.util.TestDataHelper.addPersonnelRequest;
 import static com.digiseq.digiseqwebportal.util.TestDataHelper.personnel;
 import static java.util.Collections.emptyList;
@@ -9,7 +11,6 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 
-import com.digiseq.digiseqwebportal.personnel.controller.model.request.UpdatePersonnelRequest;
 import com.digiseq.digiseqwebportal.personnel.exception.PersonnelNotFoundException;
 import com.digiseq.digiseqwebportal.personnel.model.Personnel;
 import com.digiseq.digiseqwebportal.personnel.repository.PersonnelRepository;
@@ -24,8 +25,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 @ExtendWith(SpringExtension.class)
 class PersonnelServiceTest {
-  private static final long CLIENT_ORG_ID = 123L;
-  private static final long PERSONNEL_ID = 234L;
 
   @Mock private PersonnelRepository repository;
   @Mock private PasswordEncoder passwordEncoder;
@@ -92,9 +91,9 @@ class PersonnelServiceTest {
     given(passwordEncoder.encode("password")).willReturn("encodedPassword");
 
     assertDoesNotThrow(
-        () -> service.updatePersonnel(CLIENT_ORG_ID, PERSONNEL_ID, updatePersonnelRequest()));
+        () -> service.updatePersonnel(CLIENT_ORG_ID, PERSONNEL_ID, addPersonnelRequest()));
 
-    verify(repository).updatePersonnel(personnel(null, null));
+    verify(repository).updatePersonnel(personnel(CLIENT_ORG_ID, PERSONNEL_ID));
   }
 
   @Test
@@ -102,16 +101,5 @@ class PersonnelServiceTest {
     assertDoesNotThrow(() -> service.deletePersonnel(CLIENT_ORG_ID, PERSONNEL_ID));
 
     verify(repository).deletePersonnel(CLIENT_ORG_ID, PERSONNEL_ID);
-  }
-
-  private static UpdatePersonnelRequest updatePersonnelRequest() {
-    return UpdatePersonnelRequest.builder()
-        .firstName("fred")
-        .lastName("jones")
-        .username("fjones")
-        .password("password")
-        .email("fjones@email.com")
-        .phoneNumber("0123456789")
-        .build();
   }
 }

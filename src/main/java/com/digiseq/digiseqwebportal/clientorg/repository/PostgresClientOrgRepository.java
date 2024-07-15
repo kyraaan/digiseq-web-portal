@@ -51,19 +51,30 @@ public class PostgresClientOrgRepository implements ClientOrgRepository {
   @Override
   public void saveClientOrg(ClientOrg clientOrg) {
     try {
-      dsl.insertInto(
-              CLIENTORG,
-              CLIENTORG.NAME,
-              CLIENTORG.REGISTERED_DATE,
-              CLIENTORG.EXPIRY_DATE)
-          .values(
-              clientOrg.name(),
-              clientOrg.registeredDate(),
-              clientOrg.expiryDate())
+      dsl.insertInto(CLIENTORG, CLIENTORG.NAME, CLIENTORG.REGISTERED_DATE, CLIENTORG.EXPIRY_DATE)
+          .values(clientOrg.name(), clientOrg.registeredDate(), clientOrg.expiryDate())
           .execute();
     } catch (Exception e) {
       log.error("Failed to save client org due to error: {}", e.getMessage());
       throw new PostgresRepositoryException("Failed to save client org");
+    }
+  }
+
+  @Override
+  public void updateClientOrg(ClientOrg clientOrg) {
+    try {
+      dsl.update(CLIENTORG)
+          .set(CLIENTORG.NAME, clientOrg.name())
+          .set(CLIENTORG.REGISTERED_DATE, clientOrg.registeredDate())
+          .set(CLIENTORG.EXPIRY_DATE, clientOrg.expiryDate())
+          .where(CLIENTORG.CLIENT_ID.eq(clientOrg.clientOrgId().intValue()))
+          .execute();
+    } catch (Exception e) {
+      log.error(
+          "Failed to update client org with id: {} due to error: {}",
+          clientOrg.clientOrgId(),
+          e.getMessage());
+      throw new PostgresRepositoryException("Failed to update client org");
     }
   }
 
@@ -76,10 +87,5 @@ public class PostgresClientOrgRepository implements ClientOrgRepository {
           "Failed to delete client org with id: {} due to error: {}", clientOrgId, e.getMessage());
       throw new PostgresRepositoryException("Failed to delete client org");
     }
-  }
-
-  @Override
-  public void updateClientOrg(ClientOrg clientOrg) {
-    // TODO implement
   }
 }

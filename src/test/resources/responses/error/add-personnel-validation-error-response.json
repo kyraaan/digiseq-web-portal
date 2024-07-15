@@ -2,12 +2,26 @@
   "statusCode": 400,
   "message": "Validation error",
   "errors": {
-    "firstName": "firstName cannot be empty",
-    "lastName": "lastName cannot be empty",
-    "password": "password cannot be empty",
-    "phoneNumber": "phoneNumber cannot be empty",
-    "clientOrgId": "Invalid clientOrgId",
-    "email": "email cannot be empty",
-    "username": "username cannot be empty"
+    "firstName": [
+      "must not be blank"
+    ],
+    "lastName": [
+      "must not be blank"
+    ],
+    "password": [
+      "must not be blank"
+    ],
+    "phoneNumber": [
+      "must not be blank"
+    ],
+    "clientOrgId": [
+      "id must be an integer value"
+    ],
+    "email": [
+      "must be a valid email format"
+    ],
+    "username": [
+      "must be between 3 and 20 characters"
+    ]
   }
 }

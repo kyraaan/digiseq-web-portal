@@ -4,8 +4,7 @@ import static com.digiseq.digiseqwebportal.clientorg.model.ClientOrgStatus.ACTIV
 
 import com.digiseq.digiseqwebportal.clientorg.model.ClientOrg;
 import com.digiseq.digiseqwebportal.clientorg.model.ClientOrgStatus;
-import com.digiseq.digiseqwebportal.personnel.controller.model.request.AddPersonnelRequest;
-import com.digiseq.digiseqwebportal.personnel.controller.model.request.UpdatePersonnelRequest;
+import com.digiseq.digiseqwebportal.personnel.controller.model.request.PersonnelRequest;
 import com.digiseq.digiseqwebportal.personnel.model.Personnel;
 import java.time.LocalDate;
 
@@ -20,7 +19,7 @@ public class TestDataHelper {
   public static final String USERNAME = "fjones";
   public static final String PASSWORD = "encodedPassword";
   public static final String EMAIL = "fjones@email.com";
-  public static final String NUMBER = "0123456789";
+  public static final String PHONE_NUMBER = "0123456789";
 
   public static ClientOrg clientOrg() {
     return clientOrg(CLIENT_ORG_ID, ACTIVE);
@@ -52,13 +51,13 @@ public class TestDataHelper {
         .username(USERNAME)
         .password(PASSWORD)
         .email(EMAIL)
-        .phoneNumber(NUMBER)
+        .phoneNumber(PHONE_NUMBER)
         .clientOrgId(clientOrgId)
         .build();
   }
 
-  public static AddPersonnelRequest addPersonnelRequest() {
-    return AddPersonnelRequest.builder()
+  public static PersonnelRequest addPersonnelRequest() {
+    return PersonnelRequest.builder()
         .firstName("fred")
         .lastName("jones")
         .username("fjones")
@@ -66,17 +65,6 @@ public class TestDataHelper {
         .email("fjones@email.com")
         .phoneNumber("0123456789")
         .clientOrgId("123")
-        .build();
-  }
-
-  public static UpdatePersonnelRequest updatePersonnelRequest() {
-    return UpdatePersonnelRequest.builder()
-        .firstName("fred")
-        .lastName("jones")
-        .username("fjones")
-        .password("password")
-        .email("fjones@email.com")
-        .phoneNumber("0123456789")
         .build();
   }
 }

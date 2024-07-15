@@ -1,7 +1,8 @@
 package com.digiseq.digiseqwebportal.personnel.service;
 
-import com.digiseq.digiseqwebportal.personnel.controller.model.request.AddPersonnelRequest;
-import com.digiseq.digiseqwebportal.personnel.controller.model.request.UpdatePersonnelRequest;
+import static java.lang.Long.parseLong;
+
+import com.digiseq.digiseqwebportal.personnel.controller.model.request.PersonnelRequest;
 import com.digiseq.digiseqwebportal.personnel.exception.PersonnelNotFoundException;
 import com.digiseq.digiseqwebportal.personnel.model.Personnel;
 import com.digiseq.digiseqwebportal.personnel.repository.PersonnelRepository;
@@ -30,21 +31,23 @@ public class PersonnelService {
         .orElseThrow(() -> new PersonnelNotFoundException("Personnel does not exist"));
   }
 
-  public void savePersonnel(AddPersonnelRequest request) {
-    Personnel personnel = buildPersonnel(request);
-    repository.savePersonnel(personnel);
+  public void savePersonnel(PersonnelRequest request) {
+    Long clientOrgId = parseLong(request.clientOrgId());
+    Personnel personnelToSave = buildPersonnel(request, clientOrgId, null);
+    repository.savePersonnel(personnelToSave);
   }
 
-  public void updatePersonnel(Long clientOrgId, Long personnelId, UpdatePersonnelRequest request) {
-    Personnel personnel = buildPersonnel(request);
-    repository.updatePersonnel(personnel);
+  public void updatePersonnel(Long clientOrgId, Long personnelId, PersonnelRequest request) {
+    Personnel personnelToUpdate = buildPersonnel(request, clientOrgId, personnelId);
+    repository.updatePersonnel(personnelToUpdate);
   }
 
   public void deletePersonnel(Long clientOrgId, Long personnelId) {
     repository.deletePersonnel(clientOrgId, personnelId);
   }
 
-  private  Personnel buildPersonnel(AddPersonnelRequest request) {
+  private Personnel buildPersonnel(
+          PersonnelRequest request, Long clientOrgId, Long personnelId) {
     String encodedPassword = passwordEncoder.encode(request.password());
     return Personnel.builder()
         .username(request.username())
@@ -53,19 +56,8 @@ public class PersonnelService {
         .lastName(request.lastName())
         .email(request.email())
         .phoneNumber(request.phoneNumber())
-        .clientOrgId(Long.parseLong(request.clientOrgId()))
-        .build();
-  }
-
-  private Personnel buildPersonnel(UpdatePersonnelRequest request) {
-    String encodedPassword = passwordEncoder.encode(request.password());
-    return Personnel.builder()
-        .username(request.username())
-        .password(encodedPassword)
-        .firstName(request.firstName())
-        .lastName(request.lastName())
-        .email(request.email())
-        .phoneNumber(request.phoneNumber())
+        .clientOrgId(clientOrgId)
+        .personnelId(personnelId)
         .build();
   }
 }

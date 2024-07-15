@@ -1,9 +1,9 @@
 {
-  "username": "",
+  "username": "a",
   "password": null,
-  "firstName": "",
-  "lastName": "",
-  "email": null,
+  "firstName": null,
+  "lastName": null,
+  "email": "badEmail",
   "phoneNumber": null,
   "clientOrgId": null
 }

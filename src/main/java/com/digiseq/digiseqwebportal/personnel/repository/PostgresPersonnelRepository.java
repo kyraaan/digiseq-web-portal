@@ -97,6 +97,23 @@ public class PostgresPersonnelRepository implements PersonnelRepository {
 
   @Override
   public void updatePersonnel(Personnel personnel) {
-    // TODO implement later
+    try {
+      dsl.update(PERSONNEL)
+          .set(PERSONNEL.FIRST_NAME, personnel.firstName())
+          .set(PERSONNEL.LAST_NAME, personnel.lastName())
+          .set(PERSONNEL.USERNAME, personnel.username())
+          .set(PERSONNEL.PASSWORD, personnel.password())
+          .set(PERSONNEL.EMAIL, personnel.email())
+          .set(PERSONNEL.PHONE_NUMBER, personnel.phoneNumber())
+          .where(PERSONNEL.PERSONNEL_ID.eq(personnel.personnelId().intValue()))
+          .execute();
+    } catch (Exception e) {
+      log.error(
+          "Failed to update personnel with clientOrgId: {} and personnelId: {} due to error: {}",
+          personnel.clientOrgId(),
+          personnel.personnelId(),
+          e.getMessage());
+      throw new PostgresRepositoryException("Failed to update personnel");
+    }
   }
 }

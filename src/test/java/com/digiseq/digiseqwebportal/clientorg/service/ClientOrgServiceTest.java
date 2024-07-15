@@ -13,8 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 
-import com.digiseq.digiseqwebportal.clientorg.controller.model.request.AddClientOrgRequest;
-import com.digiseq.digiseqwebportal.clientorg.controller.model.request.UpdateClientOrgRequest;
+import com.digiseq.digiseqwebportal.clientorg.controller.model.request.ClientOrgRequest;
 import com.digiseq.digiseqwebportal.clientorg.exception.ClientOrgNotFoundException;
 import com.digiseq.digiseqwebportal.clientorg.model.ClientOrg;
 import com.digiseq.digiseqwebportal.clientorg.repository.ClientOrgRepository;
@@ -80,13 +79,6 @@ class ClientOrgServiceTest {
   }
 
   @Test
-  void shouldDeleteClientOrgById() {
-    assertDoesNotThrow(() -> service.deleteClientOrgById(CLIENT_ORG_ID));
-
-    verify(repository).deleteClientOrgById(CLIENT_ORG_ID);
-  }
-
-  @Test
   void shouldSaveClientOrg() {
     ClientOrg clientOrg = clientOrg(null, null);
 
@@ -97,23 +89,22 @@ class ClientOrgServiceTest {
 
   @Test
   void shouldUpdateClientOrg() {
-    ClientOrg clientOrg = clientOrg(null, null);
+    ClientOrg clientOrg = clientOrg(CLIENT_ORG_ID, null);
 
-    assertDoesNotThrow(() -> service.updateClientOrg(CLIENT_ORG_ID, updateClientOrgRequest()));
+    assertDoesNotThrow(() -> service.updateClientOrg(CLIENT_ORG_ID, addClientOrgRequest()));
 
     verify(repository).updateClientOrg(clientOrg);
   }
 
-  private static AddClientOrgRequest addClientOrgRequest() {
-    return AddClientOrgRequest.builder()
-        .name(CLIENT_NAME)
-        .registeredDate(REGISTERED_DATE)
-        .expiryDate(EXPIRY_DATE)
-        .build();
+  @Test
+  void shouldDeleteClientOrgById() {
+    assertDoesNotThrow(() -> service.deleteClientOrgById(CLIENT_ORG_ID));
+
+    verify(repository).deleteClientOrgById(CLIENT_ORG_ID);
   }
 
-  private static UpdateClientOrgRequest updateClientOrgRequest() {
-    return UpdateClientOrgRequest.builder()
+  private static ClientOrgRequest addClientOrgRequest() {
+    return ClientOrgRequest.builder()
         .name(CLIENT_NAME)
         .registeredDate(REGISTERED_DATE)
         .expiryDate(EXPIRY_DATE)

@@ -2,8 +2,15 @@
   "statusCode": 400,
   "message": "Validation error",
   "errors": {
-    "expiryDate": "expiryDate cannot be null",
-    "registeredDate": "registeredDate cannot be null",
-    "name": "name cannot be empty"
+    "expiryDate": [
+      "must not be null"
+    ],
+    "registeredDate": [
+      "must not be null"
+    ],
+    "name": [
+      "must not be blank",
+      "must be between 3 and 20 characters"
+    ]
   }
 }

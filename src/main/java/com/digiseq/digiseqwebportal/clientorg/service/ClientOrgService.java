@@ -2,8 +2,7 @@ package com.digiseq.digiseqwebportal.clientorg.service;
 
 import static java.lang.String.format;
 
-import com.digiseq.digiseqwebportal.clientorg.controller.model.request.AddClientOrgRequest;
-import com.digiseq.digiseqwebportal.clientorg.controller.model.request.UpdateClientOrgRequest;
+import com.digiseq.digiseqwebportal.clientorg.controller.model.request.ClientOrgRequest;
 import com.digiseq.digiseqwebportal.clientorg.exception.ClientOrgNotFoundException;
 import com.digiseq.digiseqwebportal.clientorg.model.ClientOrg;
 import com.digiseq.digiseqwebportal.clientorg.model.ClientOrgStatus;
@@ -37,21 +36,21 @@ public class ClientOrgService {
     }
   }
 
-  public void saveClientOrg(AddClientOrgRequest request) {
+  public void saveClientOrg(ClientOrgRequest request) {
     ClientOrg clientOrg =
-        buildClientOrg(request.name(), request.registeredDate(), request.expiryDate());
+        buildClientOrg(null, request.name(), request.registeredDate(), request.expiryDate());
 
     repository.saveClientOrg(clientOrg);
   }
 
-  public void deleteClientOrgById(Long clientOrgId) {
-    repository.deleteClientOrgById(clientOrgId);
+  public void updateClientOrg(Long clientOrgId, ClientOrgRequest request) {
+    ClientOrg clientOrg =
+        buildClientOrg(clientOrgId, request.name(), request.registeredDate(), request.expiryDate());
+    repository.updateClientOrg(clientOrg);
   }
 
-  public void updateClientOrg(Long clientOrgId, UpdateClientOrgRequest request) {
-    ClientOrg clientOrg =
-        buildClientOrg(request.name(), request.registeredDate(), request.expiryDate());
-    repository.updateClientOrg(clientOrg);
+  public void deleteClientOrgById(Long clientOrgId) {
+    repository.deleteClientOrgById(clientOrgId);
   }
 
   private ClientOrg getClientOrg(Long clientOrgId) {
@@ -69,8 +68,9 @@ public class ClientOrgService {
   }
 
   private static ClientOrg buildClientOrg(
-      String name, LocalDate registeredDate, LocalDate expiryDate) {
+      Long clientOrgId, String name, LocalDate registeredDate, LocalDate expiryDate) {
     return ClientOrg.builder()
+        .clientOrgId(clientOrgId)
         .name(name)
         .registeredDate(registeredDate)
         .expiryDate(expiryDate)

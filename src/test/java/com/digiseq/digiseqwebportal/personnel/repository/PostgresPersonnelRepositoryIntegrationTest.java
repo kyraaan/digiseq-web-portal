@@ -19,8 +19,8 @@ import org.junit.jupiter.api.Test;
 
 class PostgresPersonnelRepositoryIntegrationTest extends BaseRepositoryIntegrationTest {
 
-  private static PostgresPersonnelRepository personnelRepository;
-  private static PostgresClientOrgRepository clientRepository;
+  private PostgresPersonnelRepository personnelRepository;
+  private PostgresClientOrgRepository clientRepository;
 
   @BeforeEach
   void setup() {
@@ -80,8 +80,57 @@ class PostgresPersonnelRepositoryIntegrationTest extends BaseRepositoryIntegrati
     assertThat(retrievedPersonnel).isEmpty();
   }
 
-  private static ClientOrg setupExistingClientOrg() {
+  @Test
+  void shouldUpdatePersonnel() {
+    ClientOrg savedClientOrg = setupExistingClientOrg();
+    Long clientOrgId = savedClientOrg.clientOrgId();
 
+    Personnel personnel = personnel(clientOrgId, null);
+    personnelRepository.savePersonnel(personnel);
+
+    List<Personnel> personnelList = personnelRepository.getPersonnelByClientOrg(clientOrgId);
+    assertThat(personnelList).hasSize(1);
+    Personnel savedPersonnel = personnelList.getFirst();
+
+    Personnel newPersonnel =
+        Personnel.builder()
+            .personnelId(savedPersonnel.personnelId())
+            .clientOrgId(clientOrgId)
+            .firstName("updatedFname")
+            .lastName("updatedLname")
+            .username("updatedUsername")
+            .password("updatedPassword")
+            .email("updatedEmail")
+            .phoneNumber("updatedPhoneNumber")
+            .build();
+    personnelRepository.updatePersonnel(newPersonnel);
+
+    Personnel updatedPersonnel =
+        personnelRepository.getPersonnelById(clientOrgId, savedPersonnel.personnelId()).get();
+
+    assertThat(updatedPersonnel.personnelId()).isNotNull();
+    assertThat(updatedPersonnel)
+        .extracting(
+            Personnel::firstName,
+            Personnel::lastName,
+            Personnel::username,
+            Personnel::password,
+            Personnel::email,
+            Personnel::phoneNumber,
+            Personnel::clientOrgId,
+            Personnel::personnelId)
+        .contains(
+            newPersonnel.firstName(),
+            newPersonnel.lastName(),
+            newPersonnel.username(),
+            newPersonnel.password(),
+            newPersonnel.email(),
+            newPersonnel.phoneNumber(),
+            newPersonnel.clientOrgId(),
+            savedPersonnel.personnelId());
+  }
+
+  private ClientOrg setupExistingClientOrg() {
     clientRepository.saveClientOrg(clientOrg());
     return clientRepository.getClientOrgs().getFirst();
   }

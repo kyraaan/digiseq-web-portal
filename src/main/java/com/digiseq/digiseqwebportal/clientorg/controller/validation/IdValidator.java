@@ -1,9 +1,9 @@
-package com.digiseq.digiseqwebportal.personnel.controller.validation;
+package com.digiseq.digiseqwebportal.clientorg.controller.validation;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 
-public class PersonnelIdValidator implements ConstraintValidator<ValidPersonnelId, String> {
+public class IdValidator implements ConstraintValidator<ValidId, String> {
   @Override
   public boolean isValid(String value, ConstraintValidatorContext context) {
     try {

@@ -12,10 +12,10 @@ import java.lang.annotation.Target;
 
 @Target({PARAMETER, FIELD, RECORD_COMPONENT})
 @Retention(RetentionPolicy.RUNTIME)
-@Constraint(validatedBy = ClientOrgIdValidator.class)
-public @interface ValidClientOrgId {
+@Constraint(validatedBy = IdValidator.class)
+public @interface ValidId {
 
-  String message() default "Invalid clientOrgId";
+  String message() default "id must be an integer value";
 
   Class<?>[] groups() default {};
 

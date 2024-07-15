@@ -1,5 +1,7 @@
 package com.digiseq.digiseqwebportal.clientorg.repository;
 
+import static com.digiseq.digiseqwebportal.util.TestDataHelper.EXPIRY_DATE;
+import static com.digiseq.digiseqwebportal.util.TestDataHelper.REGISTERED_DATE;
 import static com.digiseq.digiseqwebportal.util.TestDataHelper.clientOrg;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mapstruct.factory.Mappers.getMapper;
@@ -34,12 +36,8 @@ class PostgresClientOrgRepositoryIntegrationTest extends BaseRepositoryIntegrati
 
     assertThat(savedClientOrg.clientOrgId()).isNotNull();
     assertThat(savedClientOrg)
-        .extracting(
-            ClientOrg::name, ClientOrg::registeredDate, ClientOrg::expiryDate)
-        .contains(
-            clientOrg.name(),
-            clientOrg.registeredDate(),
-            clientOrg.expiryDate());
+        .extracting(ClientOrg::name, ClientOrg::registeredDate, ClientOrg::expiryDate)
+        .contains(clientOrg.name(), clientOrg.registeredDate(), clientOrg.expiryDate());
   }
 
   @Test
@@ -54,5 +52,30 @@ class PostgresClientOrgRepositoryIntegrationTest extends BaseRepositoryIntegrati
     assertThat(retrievedClientOrgOpt).isEmpty();
   }
 
+  @Test
+  void shouldUpdateClientOrg() {
+    ClientOrg savedClientOrg = setupExistingClientOrg();
+    Long clientOrgId = savedClientOrg.clientOrgId();
 
+    ClientOrg newClientOrg =
+        ClientOrg.builder()
+            .clientOrgId(clientOrgId)
+            .name("updatedName")
+            .registeredDate(REGISTERED_DATE.plusDays(2))
+            .expiryDate(EXPIRY_DATE.plusDays(2))
+            .build();
+
+    repository.updateClientOrg(newClientOrg);
+
+    ClientOrg updatedClientOrg = repository.getClientOrgById(clientOrgId).get();
+
+    assertThat(updatedClientOrg)
+        .extracting(ClientOrg::name, ClientOrg::registeredDate, ClientOrg::expiryDate)
+        .contains(newClientOrg.name(), newClientOrg.registeredDate(), newClientOrg.expiryDate());
+  }
+
+  private ClientOrg setupExistingClientOrg() {
+    repository.saveClientOrg(clientOrg());
+    return repository.getClientOrgs().getFirst();
+  }
 }

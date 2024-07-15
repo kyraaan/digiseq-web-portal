@@ -5,7 +5,6 @@ import static com.digiseq.digiseqwebportal.util.TestDataHelper.CLIENT_ORG_ID;
 import static com.digiseq.digiseqwebportal.util.TestDataHelper.PERSONNEL_ID;
 import static com.digiseq.digiseqwebportal.util.TestDataHelper.addPersonnelRequest;
 import static com.digiseq.digiseqwebportal.util.TestDataHelper.personnel;
-import static com.digiseq.digiseqwebportal.util.TestDataHelper.updatePersonnelRequest;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
@@ -13,8 +12,8 @@ import static org.mockito.Mockito.verifyNoInteractions;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -51,8 +50,6 @@ class PersonnelControllerTest {
   private static final String UNKNOWN_ERROR_RESPONSE_JSON =
       "responses/error/unknown-error-response.json";
   private static final String ADD_PERSONNEL_REQUEST_JSON = "requests/add-personnel-request.json";
-  private static final String UPDATE_PERSONNEL_REQUEST_JSON =
-      "requests/update-personnel-request.json";
   private static final String INVALID_ADD_PERSONNEL_REQUEST_JSON =
       "requests/invalid-add-personnel-request.json";
   private static final String ADD_PERSONNEL_INVALID_INPUT_RESPONSE_JSON =
@@ -174,12 +171,12 @@ class PersonnelControllerTest {
 
   @Test
   void shouldUpdatePersonnel() throws Exception {
-    var request = updatePersonnelRequest();
+    var request = addPersonnelRequest();
 
     mvc.perform(
-            patch(PERSONNEL_BY_ID_URI_PATH, CLIENT_ORG_ID, PERSONNEL_ID)
+            put(PERSONNEL_BY_ID_URI_PATH, CLIENT_ORG_ID, PERSONNEL_ID)
                 .contentType(APPLICATION_JSON)
-                .content(loadJsonFromFile(UPDATE_PERSONNEL_REQUEST_JSON)))
+                .content(loadJsonFromFile(ADD_PERSONNEL_REQUEST_JSON)))
         .andDo(print())
         .andExpect(status().isNoContent());
 
@@ -189,9 +186,9 @@ class PersonnelControllerTest {
   @Test
   void shouldThrow400WhenUpdatingPersonnel_givenClientOrgId() throws Exception {
     mvc.perform(
-            patch(PERSONNEL_BY_ID_URI_PATH, "badClientOrgId", PERSONNEL_ID)
+            put(PERSONNEL_BY_ID_URI_PATH, "badClientOrgId", PERSONNEL_ID)
                 .contentType(APPLICATION_JSON)
-                .content(loadJsonFromFile(UPDATE_PERSONNEL_REQUEST_JSON)))
+                .content(loadJsonFromFile(ADD_PERSONNEL_REQUEST_JSON)))
         .andDo(print())
         .andExpect(status().isBadRequest())
         .andExpect(content().json(loadJsonFromFile(INVALID_CLIENT_ORG_ID_RESPONSE_JSON)));
@@ -202,9 +199,9 @@ class PersonnelControllerTest {
   @Test
   void shouldThrow400WhenUpdatingPersonnel_givenInvalidPersonnelId() throws Exception {
     mvc.perform(
-            patch(PERSONNEL_BY_ID_URI_PATH, CLIENT_ORG_ID, "badPersonnelId")
+            put(PERSONNEL_BY_ID_URI_PATH, CLIENT_ORG_ID, "badPersonnelId")
                 .contentType(APPLICATION_JSON)
-                .content(loadJsonFromFile(UPDATE_PERSONNEL_REQUEST_JSON)))
+                .content(loadJsonFromFile(ADD_PERSONNEL_REQUEST_JSON)))
         .andDo(print())
         .andExpect(status().isBadRequest())
         .andExpect(content().json(loadJsonFromFile(INVALID_PERSONNEL_ID_RESPONSE_JSON)));

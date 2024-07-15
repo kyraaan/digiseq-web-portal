@@ -8,11 +8,11 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
 
-class ClientOrgIdValidatorTest {
-  ClientOrgIdValidator clientOrgIdValidator = new ClientOrgIdValidator();
+class IdValidatorTest {
+  IdValidator clientOrgIdValidator = new IdValidator();
 
   @Test
-  void shouldReturnTrue_givenValidClientOrgId() {
+  void shouldReturnTrue_givenValidId() {
     boolean isValid = clientOrgIdValidator.isValid("1234", null);
 
     assertTrue(isValid);
@@ -21,7 +21,7 @@ class ClientOrgIdValidatorTest {
   @ParameterizedTest
   @ValueSource(strings = "invalid")
   @NullAndEmptySource
-  void shouldReturnFalse_givenInvalidClientOrgId(String clientOrgId) {
+  void shouldReturnFalse_givenInvalidId(String clientOrgId) {
     boolean isValid = clientOrgIdValidator.isValid(clientOrgId, null);
 
     assertFalse(isValid);

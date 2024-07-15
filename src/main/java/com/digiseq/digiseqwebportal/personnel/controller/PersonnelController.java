@@ -2,12 +2,10 @@ package com.digiseq.digiseqwebportal.personnel.controller;
 
 import static java.lang.Long.parseLong;
 
-import com.digiseq.digiseqwebportal.clientorg.controller.validation.ValidClientOrgId;
+import com.digiseq.digiseqwebportal.clientorg.controller.validation.ValidId;
 import com.digiseq.digiseqwebportal.personnel.controller.mapper.PersonnelMapper;
-import com.digiseq.digiseqwebportal.personnel.controller.model.request.AddPersonnelRequest;
-import com.digiseq.digiseqwebportal.personnel.controller.model.request.UpdatePersonnelRequest;
+import com.digiseq.digiseqwebportal.personnel.controller.model.request.PersonnelRequest;
 import com.digiseq.digiseqwebportal.personnel.controller.model.response.PersonnelResponse;
-import com.digiseq.digiseqwebportal.personnel.controller.validation.ValidPersonnelId;
 import com.digiseq.digiseqwebportal.personnel.model.Personnel;
 import com.digiseq.digiseqwebportal.personnel.service.PersonnelService;
 import jakarta.validation.Valid;
@@ -17,9 +15,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -36,9 +34,8 @@ public class PersonnelController {
 
   @GetMapping("/clientOrgs/{clientOrgId}/personnel")
   ResponseEntity<List<PersonnelResponse>> getPersonnelByClientOrg(
-      @PathVariable(value = "clientOrgId") @ValidClientOrgId String clientOrgId) {
-    List<Personnel> personnel =
-        personnelService.getPersonnelByClientOrg(parseLong(clientOrgId));
+      @PathVariable(value = "clientOrgId") @ValidId String clientOrgId) {
+    List<Personnel> personnel = personnelService.getPersonnelByClientOrg(parseLong(clientOrgId));
     List<PersonnelResponse> response = mapper.toResponse(personnel);
 
     return new ResponseEntity<>(response, HttpStatus.OK);
@@ -46,8 +43,8 @@ public class PersonnelController {
 
   @GetMapping("/clientOrgs/{clientOrgId}/personnel/{personnelId}")
   ResponseEntity<PersonnelResponse> getPersonnelById(
-      @PathVariable(value = "clientOrgId") @ValidClientOrgId String clientOrgId,
-      @PathVariable(value = "personnelId") @ValidPersonnelId String personnelId) {
+      @PathVariable(value = "clientOrgId") @ValidId String clientOrgId,
+      @PathVariable(value = "personnelId") @ValidId String personnelId) {
     Personnel personnel =
         personnelService.getPersonnelById(parseLong(clientOrgId), parseLong(personnelId));
     PersonnelResponse response = mapper.toResponse(personnel);
@@ -57,18 +54,18 @@ public class PersonnelController {
 
   @PostMapping("/clientOrgs/{clientOrgId}/personnel")
   ResponseEntity<Void> addPersonnel(
-      @PathVariable(value = "clientOrgId") @ValidClientOrgId String clientOrgId,
-      @RequestBody @Valid AddPersonnelRequest request) {
+      @PathVariable(value = "clientOrgId") @ValidId String clientOrgId,
+      @RequestBody @Valid PersonnelRequest request) {
     personnelService.savePersonnel(request);
 
     return ResponseEntity.noContent().build();
   }
 
-  @PatchMapping("/clientOrgs/{clientOrgId}/personnel/{personnelId}")
+  @PutMapping("/clientOrgs/{clientOrgId}/personnel/{personnelId}")
   ResponseEntity<Void> updatePersonnel(
-      @PathVariable(value = "clientOrgId") @ValidClientOrgId String clientOrgId,
-      @PathVariable(value = "personnelId") @ValidPersonnelId String personnelId,
-      @RequestBody @Valid UpdatePersonnelRequest request) {
+      @PathVariable(value = "clientOrgId") @ValidId String clientOrgId,
+      @PathVariable(value = "personnelId") @ValidId String personnelId,
+      @RequestBody @Valid PersonnelRequest request) {
     personnelService.updatePersonnel(parseLong(clientOrgId), parseLong(personnelId), request);
 
     return ResponseEntity.noContent().build();
@@ -76,8 +73,8 @@ public class PersonnelController {
 
   @DeleteMapping("/clientOrgs/{clientOrgId}/personnel/{personnelId}")
   ResponseEntity<Void> deletePersonnelById(
-      @PathVariable(value = "clientOrgId") @ValidClientOrgId String clientOrgId,
-      @PathVariable(value = "personnelId") @ValidPersonnelId String personnelId) {
+      @PathVariable(value = "clientOrgId") @ValidId String clientOrgId,
+      @PathVariable(value = "personnelId") @ValidId String personnelId) {
     personnelService.deletePersonnel(parseLong(clientOrgId), parseLong(personnelId));
 
     return ResponseEntity.noContent().build();
