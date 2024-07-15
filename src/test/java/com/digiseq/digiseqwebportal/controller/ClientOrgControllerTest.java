@@ -14,7 +14,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.digiseq.digiseqwebportal.configuration.clientorg.ClientOrgWebConfiguration;
+import com.digiseq.digiseqwebportal.configuration.ClientOrgWebConfiguration;
 import com.digiseq.digiseqwebportal.controller.model.request.AddClientOrgRequest;
 import com.digiseq.digiseqwebportal.controller.model.request.UpdateClientOrgRequest;
 import com.digiseq.digiseqwebportal.exception.ClientOrgNotFoundException;

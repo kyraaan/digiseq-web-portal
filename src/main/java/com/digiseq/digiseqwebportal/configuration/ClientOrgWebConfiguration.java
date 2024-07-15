@@ -1,4 +1,4 @@
-package com.digiseq.digiseqwebportal.configuration.clientorg;
+package com.digiseq.digiseqwebportal.configuration;
 
 import static org.mapstruct.factory.Mappers.getMapper;
 

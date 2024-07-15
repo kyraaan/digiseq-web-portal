@@ -14,7 +14,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.digiseq.digiseqwebportal.configuration.clientorg.PersonnelWebConfiguration;
+import com.digiseq.digiseqwebportal.configuration.PersonnelWebConfiguration;
 import com.digiseq.digiseqwebportal.controller.model.request.AddPersonnelRequest;
 import com.digiseq.digiseqwebportal.controller.model.request.UpdatePersonnelRequest;
 import com.digiseq.digiseqwebportal.exception.PersonnelNotFoundException;
