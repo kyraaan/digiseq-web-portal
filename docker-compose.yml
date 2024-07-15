@@ -4,7 +4,7 @@ services:
   postgres:
     image: postgres:13
     ports:
-      - "15432:5432"
+      - "5432:5432"
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
@@ -21,7 +21,19 @@ services:
     ports:
       - "8001:8001"
     depends_on:
-      - "postgres"
+      - postgres
+
+  app:
+    image: digiseq-web-portal
+    ports:
+      - "8090:8090"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/postgres
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
+      SPRING.PROFILES.ACTIVE: local
+    depends_on:
+      - postgres
 
 volumes:
   postgres-data:
