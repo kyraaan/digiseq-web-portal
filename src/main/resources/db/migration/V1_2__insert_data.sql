@@ -1,8 +1,8 @@
 
-INSERT INTO ClientOrg (name, registered_date, expiry_date, enabled)
+INSERT INTO ClientOrg (name, registered_date, expiry_date)
 VALUES
-    ('Client 1', '2023-01-01', '2024-12-31', true),
-    ('Client 2', '2023-02-01', '2025-01-31', true);
+    ('Client 1', '2023-01-01', '2024-12-31'),
+    ('Client 2', '2023-02-01', '2025-01-31');
 
 -- Insert initial data into Personnel
 INSERT INTO Personnel (username, first_name, last_name, password, email, phone_number, client_id)

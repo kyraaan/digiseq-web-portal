@@ -4,6 +4,6 @@
     "name": "client name 1",
     "registeredDate": "2020-07-21",
     "expiryDate": "2020-08-21",
-    "isEnabled": true
+    "status": "ACTIVE"
   }
 ]

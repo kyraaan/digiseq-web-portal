@@ -10,13 +10,28 @@ spring:
     locations: classpath:db/migration
 server:
   port: 8090
+
+client-org:
+  days-until-marked-expiring-soon: 7
+
 ---
 spring:
   config:
     activate:
       on-profile: test
+  flyway:
+    enabled: false
 db:
   url: jdbc:postgresql://localhost:15432/postgres
   username: postgres
   password: postgres
 
+---
+spring:
+  config:
+    activate:
+      on-profile: local
+db:
+  url: jdbc:postgresql://localhost:15432/postgres
+  username: postgres
+  password: postgres

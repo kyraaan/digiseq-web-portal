@@ -5,8 +5,4 @@ import lombok.Builder;
 
 @Builder
 public record ClientOrgResponse(
-    Long clientOrgId,
-    String name,
-    LocalDate registeredDate,
-    LocalDate expiryDate,
-    boolean isEnabled) {}
+    Long clientOrgId, String name, LocalDate registeredDate, LocalDate expiryDate, String status) {}

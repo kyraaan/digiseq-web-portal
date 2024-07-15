@@ -3,9 +3,8 @@ CREATE TABLE ClientOrg (
     client_id SERIAL PRIMARY KEY,
     name VARCHAR(255) UNIQUE NOT NULL,
     registered_date DATE NOT NULL,
-    expiry_date DATE NOT NULL,
-    enabled BOOLEAN NOT NULL
-);
+    expiry_date DATE NOT NULL
+    );
 
 CREATE TABLE Personnel (
     personnel_id SERIAL PRIMARY KEY,

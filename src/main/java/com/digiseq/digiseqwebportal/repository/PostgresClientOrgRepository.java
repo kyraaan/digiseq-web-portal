@@ -55,13 +55,11 @@ public class PostgresClientOrgRepository implements ClientOrgRepository {
               CLIENTORG,
               CLIENTORG.NAME,
               CLIENTORG.REGISTERED_DATE,
-              CLIENTORG.EXPIRY_DATE,
-              CLIENTORG.ENABLED)
+              CLIENTORG.EXPIRY_DATE)
           .values(
               clientOrg.name(),
               clientOrg.registeredDate(),
-              clientOrg.expiryDate(),
-              clientOrg.isEnabled())
+              clientOrg.expiryDate())
           .execute();
     } catch (Exception e) {
       log.error("Failed to save client org due to error: {}", e.getMessage());

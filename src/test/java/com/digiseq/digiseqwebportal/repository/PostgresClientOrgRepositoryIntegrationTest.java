@@ -34,12 +34,11 @@ class PostgresClientOrgRepositoryIntegrationTest extends BaseRepositoryIntegrati
     assertThat(savedClientOrg.clientOrgId()).isNotNull();
     assertThat(savedClientOrg)
         .extracting(
-            ClientOrg::name, ClientOrg::registeredDate, ClientOrg::expiryDate, ClientOrg::isEnabled)
+            ClientOrg::name, ClientOrg::registeredDate, ClientOrg::expiryDate)
         .contains(
             clientOrg.name(),
             clientOrg.registeredDate(),
-            clientOrg.expiryDate(),
-            clientOrg.isEnabled());
+            clientOrg.expiryDate());
   }
 
   @Test

@@ -9,6 +9,5 @@ import org.mapstruct.Mapping;
 public interface ClientOrgRecordMapper {
 
   @Mapping(source = "clientId", target = "clientOrgId")
-  @Mapping(source = "enabled", target = "isEnabled")
   ClientOrg fromRecord(ClientorgRecord clientorgRecord);
 }

@@ -6,6 +6,7 @@ import com.digiseq.digiseqwebportal.controller.model.request.AddClientOrgRequest
 import com.digiseq.digiseqwebportal.controller.model.request.UpdateClientOrgRequest;
 import com.digiseq.digiseqwebportal.exception.ClientOrgNotFoundException;
 import com.digiseq.digiseqwebportal.model.ClientOrg;
+import com.digiseq.digiseqwebportal.model.ClientOrgStatus;
 import com.digiseq.digiseqwebportal.repository.ClientOrgRepository;
 import java.time.LocalDate;
 import java.util.List;
@@ -14,18 +15,22 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class ClientOrgService {
   private final ClientOrgRepository repository;
+  private final ClientOrgStatusCalculator calculator;
 
-  public ClientOrgService(ClientOrgRepository repository) {
+  public ClientOrgService(ClientOrgRepository repository, ClientOrgStatusCalculator calculator) {
     this.repository = repository;
+    this.calculator = calculator;
   }
 
   public List<ClientOrg> getClientOrgs() {
-    return repository.getClientOrgs();
+    List<ClientOrg> clientOrgs = repository.getClientOrgs();
+    return clientOrgs.stream().map(this::withUpdatedStatus).toList();
   }
 
   public ClientOrg getClientOrgById(Long clientOrgId) {
     try {
-      return getClientOrg(clientOrgId);
+      ClientOrg clientOrg = getClientOrg(clientOrgId);
+      return withUpdatedStatus(clientOrg);
     } catch (ClientOrgNotFoundException e) {
       log.error("No client org with id: {} was found", clientOrgId);
       throw e;
@@ -58,13 +63,18 @@ public class ClientOrgService {
                     format("Client org with id: %s does not exist", clientOrgId)));
   }
 
+  private ClientOrg withUpdatedStatus(ClientOrg clientOrg) {
+    ClientOrgStatus status = calculator.calculateStatus(clientOrg.expiryDate());
+    return clientOrg.toBuilder().status(status).build();
+  }
+
   private static ClientOrg buildClientOrg(
       String name, LocalDate registeredDate, LocalDate expiryDate) {
     return ClientOrg.builder()
         .name(name)
         .registeredDate(registeredDate)
         .expiryDate(expiryDate)
-        .isEnabled(true)
+        .status(null)
         .build();
   }
 }

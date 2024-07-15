@@ -1,8 +1,11 @@
 package com.digiseq.digiseqwebportal.util;
 
+import static com.digiseq.digiseqwebportal.model.ClientOrgStatus.ACTIVE;
+
 import com.digiseq.digiseqwebportal.controller.model.request.AddPersonnelRequest;
 import com.digiseq.digiseqwebportal.controller.model.request.UpdatePersonnelRequest;
 import com.digiseq.digiseqwebportal.model.ClientOrg;
+import com.digiseq.digiseqwebportal.model.ClientOrgStatus;
 import com.digiseq.digiseqwebportal.model.Personnel;
 import java.time.LocalDate;
 
@@ -20,16 +23,20 @@ public class TestDataHelper {
   public static final String NUMBER = "0123456789";
 
   public static ClientOrg clientOrg() {
-    return clientOrg(CLIENT_ORG_ID);
+    return clientOrg(CLIENT_ORG_ID, ACTIVE);
   }
 
   public static ClientOrg clientOrg(Long clientOrgId) {
+    return clientOrg(clientOrgId, ACTIVE);
+  }
+
+  public static ClientOrg clientOrg(Long clientOrgId, ClientOrgStatus status) {
     return ClientOrg.builder()
         .clientOrgId(clientOrgId)
         .name(CLIENT_NAME)
         .registeredDate(REGISTERED_DATE)
         .expiryDate(EXPIRY_DATE)
-        .isEnabled(true)
+        .status(status)
         .build();
   }
 

@@ -1,10 +1,12 @@
 package com.digiseq.digiseqwebportal.service;
 
+import static com.digiseq.digiseqwebportal.model.ClientOrgStatus.*;
 import static com.digiseq.digiseqwebportal.util.TestDataHelper.CLIENT_NAME;
 import static com.digiseq.digiseqwebportal.util.TestDataHelper.CLIENT_ORG_ID;
 import static com.digiseq.digiseqwebportal.util.TestDataHelper.EXPIRY_DATE;
 import static com.digiseq.digiseqwebportal.util.TestDataHelper.REGISTERED_DATE;
 import static com.digiseq.digiseqwebportal.util.TestDataHelper.clientOrg;
+import static java.util.Collections.emptyList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
@@ -16,7 +18,6 @@ import com.digiseq.digiseqwebportal.controller.model.request.UpdateClientOrgRequ
 import com.digiseq.digiseqwebportal.exception.ClientOrgNotFoundException;
 import com.digiseq.digiseqwebportal.model.ClientOrg;
 import com.digiseq.digiseqwebportal.repository.ClientOrgRepository;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
@@ -28,19 +29,20 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 @ExtendWith(SpringExtension.class)
 class ClientOrgServiceTest {
   @Mock private ClientOrgRepository repository;
+  @Mock private ClientOrgStatusCalculator statusCalculator;
 
   private ClientOrgService service;
 
   @BeforeEach
   void setup() {
-    service = new ClientOrgService(repository);
+    service = new ClientOrgService(repository, statusCalculator);
   }
 
   @Test
   void shouldGetAllClientOrgs() {
-    List<ClientOrg> savedClientOrgs =
-        List.of(ClientOrg.builder().clientOrgId(CLIENT_ORG_ID).build());
+    List<ClientOrg> savedClientOrgs = List.of(clientOrg());
     given(repository.getClientOrgs()).willReturn(savedClientOrgs);
+    given(statusCalculator.calculateStatus(EXPIRY_DATE)).willReturn(ACTIVE);
 
     List<ClientOrg> clientOrgs = service.getClientOrgs();
 
@@ -49,7 +51,7 @@ class ClientOrgServiceTest {
 
   @Test
   void shouldReturnEmptyList_givenNoClientOrgsInRepository() {
-    given(repository.getClientOrgs()).willReturn(Collections.emptyList());
+    given(repository.getClientOrgs()).willReturn(emptyList());
 
     List<ClientOrg> clientOrgs = service.getClientOrgs();
 
@@ -86,7 +88,7 @@ class ClientOrgServiceTest {
 
   @Test
   void shouldSaveClientOrg() {
-    ClientOrg clientOrg = clientOrg(null);
+    ClientOrg clientOrg = clientOrg(null, null);
 
     assertDoesNotThrow(() -> service.saveClientOrg(addClientOrgRequest()));
 
@@ -95,7 +97,7 @@ class ClientOrgServiceTest {
 
   @Test
   void shouldUpdateClientOrg() {
-    ClientOrg clientOrg = clientOrg(null);
+    ClientOrg clientOrg = clientOrg(null, null);
 
     assertDoesNotThrow(() -> service.updateClientOrg(CLIENT_ORG_ID, updateClientOrgRequest()));
 
