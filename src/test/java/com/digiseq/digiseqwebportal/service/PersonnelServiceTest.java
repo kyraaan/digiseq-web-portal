@@ -18,6 +18,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 @ExtendWith(SpringExtension.class)
@@ -26,12 +27,13 @@ class PersonnelServiceTest {
   private static final long PERSONNEL_ID = 234L;
 
   @Mock private PersonnelRepository repository;
+  @Mock private PasswordEncoder passwordEncoder;
 
   private PersonnelService service;
 
   @BeforeEach
   void setup() {
-    service = new PersonnelService(repository);
+    service = new PersonnelService(repository, passwordEncoder);
   }
 
   @Test
@@ -77,6 +79,8 @@ class PersonnelServiceTest {
 
   @Test
   void shouldSavePersonnel() {
+    given(passwordEncoder.encode("password")).willReturn("encodedPassword");
+
     assertDoesNotThrow(() -> service.savePersonnel(addPersonnelRequest()));
 
     verify(repository).savePersonnel(personnel(CLIENT_ORG_ID));
@@ -84,6 +88,8 @@ class PersonnelServiceTest {
 
   @Test
   void shouldUpdatePersonnel() {
+    given(passwordEncoder.encode("password")).willReturn("encodedPassword");
+
     assertDoesNotThrow(
         () -> service.updatePersonnel(CLIENT_ORG_ID, PERSONNEL_ID, updatePersonnelRequest()));
 
@@ -102,7 +108,7 @@ class PersonnelServiceTest {
         .firstName("fred")
         .lastName("jones")
         .username("fjones")
-        .password("password")
+        .password("encodedPassword")
         .email("fjones@email.com")
         .phoneNumber("0123456789")
         .clientOrgId(clientOrgId)

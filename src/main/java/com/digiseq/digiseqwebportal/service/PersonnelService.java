@@ -7,14 +7,17 @@ import com.digiseq.digiseqwebportal.model.Personnel;
 import com.digiseq.digiseqwebportal.repository.PersonnelRepository;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Slf4j
 public class PersonnelService {
 
   private final PersonnelRepository repository;
+  private final PasswordEncoder passwordEncoder;
 
-  public PersonnelService(PersonnelRepository repository) {
+  public PersonnelService(PersonnelRepository repository, PasswordEncoder passwordEncoder) {
     this.repository = repository;
+    this.passwordEncoder = passwordEncoder;
   }
 
   public List<Personnel> getPersonnelByClientOrg(Long clientOrgId) {
@@ -41,11 +44,11 @@ public class PersonnelService {
     repository.deletePersonnel(clientOrgId, personnelId);
   }
 
-  private static Personnel buildPersonnel(AddPersonnelRequest request) {
-    // todo password hashing
+  private  Personnel buildPersonnel(AddPersonnelRequest request) {
+    String encodedPassword = passwordEncoder.encode(request.password());
     return Personnel.builder()
         .username(request.username())
-        .password(request.password())
+        .password(encodedPassword)
         .firstName(request.firstName())
         .lastName(request.lastName())
         .email(request.email())
@@ -54,11 +57,11 @@ public class PersonnelService {
         .build();
   }
 
-  private static Personnel buildPersonnel(UpdatePersonnelRequest request) {
-    // todo password hashing
+  private Personnel buildPersonnel(UpdatePersonnelRequest request) {
+    String encodedPassword = passwordEncoder.encode(request.password());
     return Personnel.builder()
         .username(request.username())
-        .password(request.password())
+        .password(encodedPassword)
         .firstName(request.firstName())
         .lastName(request.lastName())
         .email(request.email())

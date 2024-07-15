@@ -19,6 +19,7 @@
         <jooq.version>3.15.4</jooq.version>
         <flyway.version>10.15.2</flyway.version>
         <springdoc.version>2.6.0</springdoc.version>
+        <spring-security-crypto.version>6.3.1</spring-security-crypto.version>
     </properties>
     <dependencies>
         <dependency>
@@ -47,6 +48,11 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-jooq</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-crypto</artifactId>
+            <version>${spring-security-crypto.version}</version>
         </dependency>
         <dependency>
             <groupId>org.jooq</groupId>
