@@ -22,7 +22,7 @@ spring:
   flyway:
     enabled: false
 db:
-  url: jdbc:postgresql://localhost:15432/postgres
+  url: jdbc:postgresql://localhost:5432/postgres
   username: postgres
   password: postgres
 
@@ -32,6 +32,6 @@ spring:
     activate:
       on-profile: local
 db:
-  url: jdbc:postgresql://localhost:15432/postgres
+  url: jdbc:postgresql://localhost:5432/postgres
   username: postgres
   password: postgres

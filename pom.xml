@@ -20,6 +20,7 @@
         <flyway.version>10.15.2</flyway.version>
         <springdoc.version>2.6.0</springdoc.version>
         <spring-security-crypto.version>6.3.1</spring-security-crypto.version>
+        <test-containers-postgresql.version>1.19.8</test-containers-postgresql.version>
     </properties>
     <dependencies>
         <dependency>
@@ -29,6 +30,10 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-validation</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
@@ -100,13 +105,13 @@
         <dependency>
             <groupId>org.testcontainers</groupId>
             <artifactId>postgresql</artifactId>
-            <version>1.19.8</version>
+            <version>${test-containers-postgresql.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.testcontainers</groupId>
             <artifactId>junit-jupiter</artifactId>
-            <version>1.19.8</version>
+            <version>${test-containers-postgresql.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -138,7 +143,7 @@
                 <configuration>
                     <jdbc>
                         <driver>org.postgresql.Driver</driver>
-                        <url>jdbc:postgresql://localhost:15432/postgres</url>
+                        <url>jdbc:postgresql://localhost:5432/postgres</url>
                         <user>postgres</user>
                         <password>postgres</password>
                     </jdbc>
@@ -160,7 +165,22 @@
                     </generator>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.flywaydb</groupId>
+                <artifactId>flyway-maven-plugin</artifactId>
+                <version>${flyway.version}</version>
+                <configuration>
+                    <url>jdbc:postgresql://localhost:5432/postgres</url>
+                    <user>postgres</user>
+                    <password>postgres</password>
+                    <schemas>
+                        <schema>public</schema>
+                    </schemas>
+                    <locations>
+                        <location>filesystem:${project.basedir}/src/main/resources/db/migration</location>
+                    </locations>
+                </configuration>
+           </plugin>
         </plugins>
     </build>
-
 </project>

@@ -5,27 +5,31 @@ A Web Portal Application to allow the modification and management of Client Orga
 - Java 21
 - Spring Boot 3.3
 - Maven
+- Docker
 - PostgreSQL
-- Jooq
+- jOOQ
 - Flyway
 
 ### Running Locally
 
 To start the application locally, follow these steps:
 
+Unfortunately, jOOQ requires an active database connection, in order to generate the records during compilation.
+So we must first spin up our postgres instance before we can run any maven builds
+
+- `docker-compose up -d --scale app=0` This will start up all dependencies excluding the java app
+- `mvn flyway:migrate`
 - `mvn clean package -DskipTests`
+- `docker build -t digiseq-web-portal .`
+- `docker-compose up app` - And finally bring up the app
 
-- `docker build -t digiseq-web-portal`
-
-- `docker-compose up` - This will bring up the app, the postgres instance and the pgadmin portal to access the db.
+Then you should be able to see the health of the service http://localhost:8090/actuator/health
 
 To tear down
 `docker-compose down -v`
 ### To run the app via IntelliJ (useful for debugging)
-
-- `docker-compose up --scale app=0` This will start up all dependencies excluding the java app
+- `docker-compose up --scale app=0` 
 - Start the app via IntelliJ on `local` profile
-
 
 ### Database access
 Access the local PGAdmin portal for database management:
@@ -42,8 +46,7 @@ Use these details to connect to the Postgres server:
 - **Username:** postgres
 - **Password:** postgres
 
-
 ### Documentation
 The OpenAPI swagger-ui can be found here: http://localhost:8090/swagger-ui/index.html
 
-The docs can be found: `http://localhost:8090/v3/api-docs`
+The API docs can be found here: http://localhost:8090/v3/api-doc
