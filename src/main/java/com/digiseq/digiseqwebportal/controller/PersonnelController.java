@@ -38,7 +38,7 @@ public class PersonnelController {
   ResponseEntity<List<PersonnelResponse>> getPersonnelByClientOrg(
       @PathVariable(value = "clientOrgId") @ValidClientOrgId String clientOrgId) {
     List<Personnel> personnel =
-        personnelService.getPersonnelByClientOrg(Long.parseLong(clientOrgId));
+        personnelService.getPersonnelByClientOrg(parseLong(clientOrgId));
     List<PersonnelResponse> response = mapper.toResponse(personnel);
 
     return new ResponseEntity<>(response, HttpStatus.OK);

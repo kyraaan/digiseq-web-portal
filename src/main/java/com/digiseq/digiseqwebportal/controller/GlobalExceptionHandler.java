@@ -7,6 +7,7 @@ import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 import com.digiseq.digiseqwebportal.exception.ClientOrgNotFoundException;
+import com.digiseq.digiseqwebportal.exception.DigiseqBaseException;
 import com.digiseq.digiseqwebportal.exception.PersonnelNotFoundException;
 import com.digiseq.digiseqwebportal.exception.model.ErrorResponse;
 import jakarta.validation.ConstraintViolation;
@@ -29,6 +30,13 @@ public class GlobalExceptionHandler {
     log.error("Handling unknown exception", e);
     ErrorResponse errorResponse =
         new ErrorResponse(INTERNAL_SERVER_ERROR.value(), "Unexpected error");
+    return new ResponseEntity<>(errorResponse, INTERNAL_SERVER_ERROR);
+  }
+
+  @ExceptionHandler(DigiseqBaseException.class)
+  public ResponseEntity<ErrorResponse> handleException(DigiseqBaseException e) {
+    log.error("Handling DigiseqBaseException", e);
+    ErrorResponse errorResponse = new ErrorResponse(INTERNAL_SERVER_ERROR.value(), e.getMessage());
     return new ResponseEntity<>(errorResponse, INTERNAL_SERVER_ERROR);
   }
 

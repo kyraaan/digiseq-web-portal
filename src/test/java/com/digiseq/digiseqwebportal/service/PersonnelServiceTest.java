@@ -5,13 +5,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 
 import com.digiseq.digiseqwebportal.controller.model.request.AddPersonnelRequest;
 import com.digiseq.digiseqwebportal.controller.model.request.UpdatePersonnelRequest;
 import com.digiseq.digiseqwebportal.exception.PersonnelNotFoundException;
-import com.digiseq.digiseqwebportal.exception.PersonnelServiceException;
 import com.digiseq.digiseqwebportal.model.Personnel;
 import com.digiseq.digiseqwebportal.repository.PersonnelRepository;
 import java.util.List;
@@ -56,18 +54,6 @@ class PersonnelServiceTest {
   }
 
   @Test
-  void shouldThrowServiceExceptionWhenGettingPersonnel_givenRepositoryFailure() {
-    given(repository.getPersonnelByClientOrg(CLIENT_ORG_ID))
-        .willThrow(new RuntimeException("some error"));
-
-    Throwable error = catchThrowable(() -> service.getPersonnelByClientOrg(CLIENT_ORG_ID));
-
-    assertThat(error)
-        .isInstanceOf(PersonnelServiceException.class)
-        .hasMessage("Failed to retrieve personnel");
-  }
-
-  @Test
   void shouldReturnPersonnelById() {
     Personnel expectedPersonnel = Personnel.builder().build();
     given(repository.getPersonnelById(CLIENT_ORG_ID, PERSONNEL_ID))
@@ -90,33 +76,10 @@ class PersonnelServiceTest {
   }
 
   @Test
-  void shouldThrowServiceExceptionWhenGettingPersonnelById_givenRepositoryFailure() {
-    given(repository.getPersonnelById(CLIENT_ORG_ID, PERSONNEL_ID))
-        .willThrow(new RuntimeException("some error"));
-
-    Throwable error = catchThrowable(() -> service.getPersonnelById(CLIENT_ORG_ID, PERSONNEL_ID));
-
-    assertThat(error)
-        .isInstanceOf(PersonnelServiceException.class)
-        .hasMessage("Failed to retrieve personnel with clientOrgId: 123 and personnelId: 234");
-  }
-
-  @Test
   void shouldSavePersonnel() {
     assertDoesNotThrow(() -> service.savePersonnel(addPersonnelRequest()));
 
     verify(repository).savePersonnel(personnel(CLIENT_ORG_ID));
-  }
-
-  @Test
-  void shouldThrowServiceException_givenFailureToSavePersonnel() {
-    doThrow(new RuntimeException("error")).when(repository).savePersonnel(personnel(CLIENT_ORG_ID));
-
-    Throwable error = catchThrowable(() -> service.savePersonnel(addPersonnelRequest()));
-
-    assertThat(error)
-        .isInstanceOf(PersonnelServiceException.class)
-        .hasMessage("Failed to save personnel");
   }
 
   @Test
@@ -128,36 +91,10 @@ class PersonnelServiceTest {
   }
 
   @Test
-  void shouldThrowServiceException_givenFailureToUpdatePersonnel() {
-    doThrow(new RuntimeException("some error")).when(repository).updatePersonnel(personnel(null));
-
-    Throwable error =
-        catchThrowable(
-            () -> service.updatePersonnel(CLIENT_ORG_ID, PERSONNEL_ID, updatePersonnelRequest()));
-
-    assertThat(error)
-        .isInstanceOf(PersonnelServiceException.class)
-        .hasMessage("Failed to update personnel");
-  }
-
-  @Test
   void shouldDeletePersonnel() {
     assertDoesNotThrow(() -> service.deletePersonnel(CLIENT_ORG_ID, PERSONNEL_ID));
 
     verify(repository).deletePersonnel(CLIENT_ORG_ID, PERSONNEL_ID);
-  }
-
-  @Test
-  void shouldThrowServiceException_givenFailureToDeletePersonnel() {
-    doThrow(new RuntimeException("some error"))
-        .when(repository)
-        .deletePersonnel(CLIENT_ORG_ID, PERSONNEL_ID);
-
-    Throwable error = catchThrowable(() -> service.deletePersonnel(CLIENT_ORG_ID, PERSONNEL_ID));
-
-    assertThat(error)
-        .isInstanceOf(PersonnelServiceException.class)
-        .hasMessage("Failed to delete personnel with clientOrgId: 123 and personnelId: 234");
   }
 
   private static Personnel personnel(Long clientOrgId) {

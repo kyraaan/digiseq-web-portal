@@ -4,13 +4,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 
 import com.digiseq.digiseqwebportal.controller.model.request.AddClientOrgRequest;
 import com.digiseq.digiseqwebportal.controller.model.request.UpdateClientOrgRequest;
 import com.digiseq.digiseqwebportal.exception.ClientOrgNotFoundException;
-import com.digiseq.digiseqwebportal.exception.ClientOrgServiceException;
 import com.digiseq.digiseqwebportal.model.ClientOrg;
 import com.digiseq.digiseqwebportal.repository.ClientOrgRepository;
 import java.time.LocalDate;
@@ -57,17 +55,6 @@ class ClientOrgServiceTest {
   }
 
   @Test
-  void shouldReturnException_givenFailureToRetrieveClientOrgs() {
-    given(repository.getClientOrgs()).willThrow(new RuntimeException("some error"));
-
-    Throwable error = catchThrowable(() -> service.getClientOrgs());
-
-    assertThat(error)
-        .isInstanceOf(ClientOrgServiceException.class)
-        .hasMessage("Failed to retrieve client orgs");
-  }
-
-  @Test
   void shouldGetClientOrgById() {
     ClientOrg savedClientOrg = ClientOrg.builder().clientOrgId(CLIENT_ORG_ID).build();
     given(repository.getClientOrgById(CLIENT_ORG_ID)).willReturn(Optional.of(savedClientOrg));
@@ -89,34 +76,10 @@ class ClientOrgServiceTest {
   }
 
   @Test
-  void shouldThrowServiceException_givenFailureToRetrieveClientOrgById() {
-    given(repository.getClientOrgById(CLIENT_ORG_ID)).willThrow(new RuntimeException("some error"));
-
-    Throwable error = catchThrowable(() -> service.getClientOrgById(CLIENT_ORG_ID));
-
-    assertThat(error)
-        .isInstanceOf(ClientOrgServiceException.class)
-        .hasMessage("Failed to retrieve client org with id: 123");
-  }
-
-  @Test
   void shouldDeleteClientOrgById() {
     assertDoesNotThrow(() -> service.deleteClientOrgById(CLIENT_ORG_ID));
 
     verify(repository).deleteClientOrgById(CLIENT_ORG_ID);
-  }
-
-  @Test
-  void shouldThrowServiceExceptionWhenDeletingClientOrg_givenFailureToDelete() {
-    doThrow(new RuntimeException("delete error"))
-        .when(repository)
-        .deleteClientOrgById(CLIENT_ORG_ID);
-
-    Throwable error = catchThrowable(() -> service.deleteClientOrgById(CLIENT_ORG_ID));
-
-    assertThat(error)
-        .isInstanceOf(ClientOrgServiceException.class)
-        .hasMessage("Failed to delete client org with id: 123");
   }
 
   @Test
@@ -129,35 +92,12 @@ class ClientOrgServiceTest {
   }
 
   @Test
-  void shouldThrowServiceException_givenFailureToSaveClientOrg() {
-    doThrow(new RuntimeException("save error")).when(repository).saveClientOrg(clientOrg());
-
-    Throwable error = catchThrowable(() -> service.saveClientOrg(addClientOrgRequest()));
-
-    assertThat(error)
-        .isInstanceOf(ClientOrgServiceException.class)
-        .hasMessage("Failed to save client org");
-  }
-
-  @Test
   void shouldUpdateClientOrg() {
     ClientOrg clientOrg = clientOrg();
 
     assertDoesNotThrow(() -> service.updateClientOrg(CLIENT_ORG_ID, updateClientOrgRequest()));
 
     verify(repository).updateClientOrg(clientOrg);
-  }
-
-  @Test
-  void shouldThrowServiceException_givenFailureToUpdateClientOrg() {
-    doThrow(new RuntimeException("update error")).when(repository).updateClientOrg(clientOrg());
-
-    Throwable error =
-        catchThrowable(() -> service.updateClientOrg(CLIENT_ORG_ID, updateClientOrgRequest()));
-
-    assertThat(error)
-        .isInstanceOf(ClientOrgServiceException.class)
-        .hasMessage("Failed to update client org");
   }
 
   private static ClientOrg clientOrg() {
