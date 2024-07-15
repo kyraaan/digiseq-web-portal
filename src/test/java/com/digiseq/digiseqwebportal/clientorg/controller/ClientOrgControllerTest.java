@@ -38,20 +38,20 @@ class ClientOrgControllerTest {
   private static final String CLIENT_ORG_BY_ID_URI_PATH = "/clientOrgs/{clientOrgId}";
 
   private static final String GET_CLIENT_ORGS_SUCCESS_JSON =
-      "responses/get-client-orgs-success-response.json";
+          "responses/clientorg/get-client-orgs-success-response.json";
   private static final String GET_CLIENT_ORG_BY_ID_SUCCESS_JSON =
-      "responses/get-client-org-by-id-success-response.json";
+          "responses/clientorg/get-client-org-by-id-success-response.json";
   private static final String INVALID_CLIENT_ORG_ID_RESPONSE_JSON =
-      "responses/error/invalid-client-org-id-response.json";
+          "responses/clientorg/error/invalid-client-org-id-response.json";
   private static final String CLIENT_ORG_NOT_FOUND_RESPONSE_JSON =
-      "responses/error/get-client-org-not-found-response.json";
+          "responses/clientorg/error/get-client-org-not-found-response.json";
   private static final String UNKNOWN_ERROR_RESPONSE_JSON =
-      "responses/error/unknown-error-response.json";
-  private static final String ADD_CLIENT_ORG_REQUEST_JSON = "requests/add-client-org-request.json";
+          "responses/unknown-error-response.json";
+  private static final String ADD_CLIENT_ORG_REQUEST_JSON = "requests/clientorg/add-client-org-request.json";
   private static final String INVALID_ADD_CLIENT_ORG_REQUEST_JSON =
-      "requests/invalid-add-client-org-request.json";
+          "requests/clientorg/invalid-add-client-org-request.json";
   private static final String ADD_CLIENT_ORG_INVALID_INPUT_RESPONSE_JSON =
-      "responses/error/add-client-org-validation-error-response.json";
+          "responses/clientorg/error/add-client-org-validation-error-response.json";
 
   @Autowired MockMvc mvc;
 

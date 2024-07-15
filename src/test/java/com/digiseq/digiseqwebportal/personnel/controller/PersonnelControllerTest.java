@@ -38,22 +38,22 @@ class PersonnelControllerTest {
       "/clientOrgs/{clientOrgId}/personnel/{personnelId}";
 
   private static final String GET_PERSONNEL_SUCCESS_JSON =
-      "responses/get-personnel-success-response.json";
+          "responses/personnel/get-personnel-success-response.json";
   private static final String GET_PERSONNEL_BY_ID_SUCCESS_JSON =
-      "responses/get-personnel-by-id-success-response.json";
+          "responses/personnel/get-personnel-by-id-success-response.json";
   private static final String INVALID_CLIENT_ORG_ID_RESPONSE_JSON =
-      "responses/error/invalid-client-org-id-response.json";
+          "responses/clientorg/error/invalid-client-org-id-response.json";
   private static final String INVALID_PERSONNEL_ID_RESPONSE_JSON =
-      "responses/error/invalid-personnel-id-response.json";
+          "responses/personnel/error/invalid-personnel-id-response.json";
   private static final String PERSONNEL_NOT_FOUND_RESPONSE_JSON =
-      "responses/error/get-personnel-not-found-response.json";
+          "responses/personnel/error/get-personnel-not-found-response.json";
   private static final String UNKNOWN_ERROR_RESPONSE_JSON =
-      "responses/error/unknown-error-response.json";
-  private static final String ADD_PERSONNEL_REQUEST_JSON = "requests/add-personnel-request.json";
+          "responses/unknown-error-response.json";
+  private static final String ADD_PERSONNEL_REQUEST_JSON = "requests/personnel/add-personnel-request.json";
   private static final String INVALID_ADD_PERSONNEL_REQUEST_JSON =
-      "requests/invalid-add-personnel-request.json";
+          "requests/personnel/invalid-add-personnel-request.json";
   private static final String ADD_PERSONNEL_INVALID_INPUT_RESPONSE_JSON =
-      "responses/error/add-personnel-validation-error-response.json";
+          "responses/personnel/error/add-personnel-validation-error-response.json";
 
   @Autowired MockMvc mvc;
 
