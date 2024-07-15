@@ -1,5 +1,8 @@
 package com.digiseq.digiseqwebportal.repository;
 
+import static com.digiseq.digiseqwebportal.util.TestDataHelper.PERSONNEL_ID;
+import static com.digiseq.digiseqwebportal.util.TestDataHelper.clientOrg;
+import static com.digiseq.digiseqwebportal.util.TestDataHelper.personnel;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mapstruct.factory.Mappers.getMapper;
 
@@ -7,7 +10,6 @@ import com.digiseq.digiseqwebportal.model.ClientOrg;
 import com.digiseq.digiseqwebportal.model.Personnel;
 import com.digiseq.digiseqwebportal.repository.mapper.ClientOrgRecordMapper;
 import com.digiseq.digiseqwebportal.repository.mapper.PersonnelRecordMapper;
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
@@ -29,7 +31,7 @@ class PostgresPersonnelRepositoryIntegrationTest extends BaseRepositoryIntegrati
   @Test
   void shouldSaveAndRetrievePersonnel() {
     ClientOrg savedClientOrg = setupExistingClientOrg();
-    Personnel personnel = personnel(savedClientOrg.clientOrgId());
+    Personnel personnel = personnel(savedClientOrg.clientOrgId(), null);
 
     personnelRepository.savePersonnel(personnel);
 
@@ -63,7 +65,7 @@ class PostgresPersonnelRepositoryIntegrationTest extends BaseRepositoryIntegrati
     ClientOrg existingClientOrg = setupExistingClientOrg();
     Long existingClientOrgId = existingClientOrg.clientOrgId();
 
-    Personnel existingPersonnel = personnel(existingClientOrgId);
+    Personnel existingPersonnel = personnel(existingClientOrgId, PERSONNEL_ID);
     personnelRepository.savePersonnel(existingPersonnel);
 
     Personnel personnel =
@@ -77,28 +79,8 @@ class PostgresPersonnelRepositoryIntegrationTest extends BaseRepositoryIntegrati
   }
 
   private static ClientOrg setupExistingClientOrg() {
-    ClientOrg clientOrg =
-        ClientOrg.builder()
-            .clientOrgId(null)
-            .name("Test Client")
-            .registeredDate(LocalDate.now())
-            .expiryDate(LocalDate.now().plusYears(1))
-            .isEnabled(true)
-            .build();
 
-    clientRepository.saveClientOrg(clientOrg);
+    clientRepository.saveClientOrg(clientOrg());
     return clientRepository.getClientOrgs().getFirst();
-  }
-
-  private static Personnel personnel(Long clientOrgId) {
-    return Personnel.builder()
-        .firstName("fred")
-        .lastName("jones")
-        .username("fjones")
-        .password("password")
-        .email("fjones@email.com")
-        .phoneNumber("0123456789")
-        .clientOrgId(clientOrgId)
-        .build();
   }
 }

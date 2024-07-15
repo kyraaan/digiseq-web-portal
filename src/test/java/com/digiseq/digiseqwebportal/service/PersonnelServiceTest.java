@@ -1,5 +1,7 @@
 package com.digiseq.digiseqwebportal.service;
 
+import static com.digiseq.digiseqwebportal.util.TestDataHelper.addPersonnelRequest;
+import static com.digiseq.digiseqwebportal.util.TestDataHelper.personnel;
 import static java.util.Collections.emptyList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
@@ -7,7 +9,6 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 
-import com.digiseq.digiseqwebportal.controller.model.request.AddPersonnelRequest;
 import com.digiseq.digiseqwebportal.controller.model.request.UpdatePersonnelRequest;
 import com.digiseq.digiseqwebportal.exception.PersonnelNotFoundException;
 import com.digiseq.digiseqwebportal.model.Personnel;
@@ -83,7 +84,7 @@ class PersonnelServiceTest {
 
     assertDoesNotThrow(() -> service.savePersonnel(addPersonnelRequest()));
 
-    verify(repository).savePersonnel(personnel(CLIENT_ORG_ID));
+    verify(repository).savePersonnel(personnel(CLIENT_ORG_ID, null));
   }
 
   @Test
@@ -93,7 +94,7 @@ class PersonnelServiceTest {
     assertDoesNotThrow(
         () -> service.updatePersonnel(CLIENT_ORG_ID, PERSONNEL_ID, updatePersonnelRequest()));
 
-    verify(repository).updatePersonnel(personnel(null));
+    verify(repository).updatePersonnel(personnel(null, null));
   }
 
   @Test
@@ -101,30 +102,6 @@ class PersonnelServiceTest {
     assertDoesNotThrow(() -> service.deletePersonnel(CLIENT_ORG_ID, PERSONNEL_ID));
 
     verify(repository).deletePersonnel(CLIENT_ORG_ID, PERSONNEL_ID);
-  }
-
-  private static Personnel personnel(Long clientOrgId) {
-    return Personnel.builder()
-        .firstName("fred")
-        .lastName("jones")
-        .username("fjones")
-        .password("encodedPassword")
-        .email("fjones@email.com")
-        .phoneNumber("0123456789")
-        .clientOrgId(clientOrgId)
-        .build();
-  }
-
-  private static AddPersonnelRequest addPersonnelRequest() {
-    return AddPersonnelRequest.builder()
-        .firstName("fred")
-        .lastName("jones")
-        .username("fjones")
-        .password("password")
-        .email("fjones@email.com")
-        .phoneNumber("0123456789")
-        .clientOrgId("123")
-        .build();
   }
 
   private static UpdatePersonnelRequest updatePersonnelRequest() {

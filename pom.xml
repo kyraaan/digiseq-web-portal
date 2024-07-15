@@ -149,7 +149,7 @@
                                 <property>
                                     <key>scripts</key>
                                     <value>
-                                        ${basedir}/src/main/resources/db/migrations/db/migrations/V1__Create_ClientOrg_and_Personnel_Tables.sql
+                                        ${basedir}/src/main/resources/db/migration/V1__initialise_db.sql
                                     </value>
                                 </property>
                             </properties>

@@ -1,11 +1,11 @@
 package com.digiseq.digiseqwebportal.repository;
 
+import static com.digiseq.digiseqwebportal.util.TestDataHelper.clientOrg;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mapstruct.factory.Mappers.getMapper;
 
 import com.digiseq.digiseqwebportal.model.ClientOrg;
 import com.digiseq.digiseqwebportal.repository.mapper.ClientOrgRecordMapper;
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
@@ -23,7 +23,7 @@ class PostgresClientOrgRepositoryIntegrationTest extends BaseRepositoryIntegrati
 
   @Test
   void shouldSaveAndRetrieveClientOrg() {
-    ClientOrg clientOrg = getClientOrg();
+    ClientOrg clientOrg = clientOrg();
 
     repository.saveClientOrg(clientOrg);
 
@@ -44,7 +44,7 @@ class PostgresClientOrgRepositoryIntegrationTest extends BaseRepositoryIntegrati
 
   @Test
   void shouldDeleteClientOrg() {
-    ClientOrg clientOrg = getClientOrg();
+    ClientOrg clientOrg = clientOrg();
     repository.saveClientOrg(clientOrg);
 
     Long savedClientOrgId = repository.getClientOrgs().getFirst().clientOrgId();
@@ -54,12 +54,5 @@ class PostgresClientOrgRepositoryIntegrationTest extends BaseRepositoryIntegrati
     assertThat(retrievedClientOrgOpt).isEmpty();
   }
 
-  private static ClientOrg getClientOrg() {
-    return ClientOrg.builder()
-        .name("Test Client")
-        .registeredDate(LocalDate.of(2020, 7, 21))
-        .expiryDate(LocalDate.of(2020, 8, 21))
-        .isEnabled(true)
-        .build();
-  }
+
 }

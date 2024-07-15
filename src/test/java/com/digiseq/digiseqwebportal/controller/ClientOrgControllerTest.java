@@ -1,6 +1,11 @@
 package com.digiseq.digiseqwebportal.controller;
 
 import static com.digiseq.digiseqwebportal.util.JsonLoader.loadJsonFromFile;
+import static com.digiseq.digiseqwebportal.util.TestDataHelper.CLIENT_NAME;
+import static com.digiseq.digiseqwebportal.util.TestDataHelper.CLIENT_ORG_ID;
+import static com.digiseq.digiseqwebportal.util.TestDataHelper.EXPIRY_DATE;
+import static com.digiseq.digiseqwebportal.util.TestDataHelper.REGISTERED_DATE;
+import static com.digiseq.digiseqwebportal.util.TestDataHelper.clientOrg;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
@@ -18,9 +23,7 @@ import com.digiseq.digiseqwebportal.configuration.ClientOrgWebConfiguration;
 import com.digiseq.digiseqwebportal.controller.model.request.AddClientOrgRequest;
 import com.digiseq.digiseqwebportal.controller.model.request.UpdateClientOrgRequest;
 import com.digiseq.digiseqwebportal.exception.ClientOrgNotFoundException;
-import com.digiseq.digiseqwebportal.model.ClientOrg;
 import com.digiseq.digiseqwebportal.service.ClientOrgService;
-import java.time.LocalDate;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,10 +37,6 @@ import org.springframework.test.web.servlet.MockMvc;
 class ClientOrgControllerTest {
   private static final String CLIENT_ORG_URI_PATH = "/clientOrgs";
   private static final String CLIENT_ORG_BY_ID_URI_PATH = "/clientOrgs/{clientOrgId}";
-  private static final String CLIENT_NAME = "client name 1";
-  private static final long CLIENT_ORG_ID = 123L;
-  private static final LocalDate REGISTERED_DATE = LocalDate.of(2020, 7, 21);
-  private static final LocalDate EXPIRY_DATE = LocalDate.of(2020, 8, 21);
 
   private static final String GET_CLIENT_ORGS_SUCCESS_JSON =
       "responses/get-client-orgs-success-response.json";
@@ -63,7 +62,7 @@ class ClientOrgControllerTest {
 
   @Test
   void shouldReturnAllClientOrgs() throws Exception {
-    given(clientOrgService.getClientOrgs()).willReturn(clientOrgs());
+    given(clientOrgService.getClientOrgs()).willReturn(List.of(clientOrg()));
 
     mvc.perform(get(CLIENT_ORG_URI_PATH))
         .andDo(print())
@@ -194,19 +193,5 @@ class ClientOrgControllerTest {
         .andExpect(content().json(loadJsonFromFile(INVALID_CLIENT_ORG_ID_RESPONSE_JSON)));
 
     verifyNoInteractions(clientOrgService);
-  }
-
-  private static List<ClientOrg> clientOrgs() {
-    return List.of(clientOrg());
-  }
-
-  private static ClientOrg clientOrg() {
-    return ClientOrg.builder()
-        .clientOrgId(CLIENT_ORG_ID)
-        .name(CLIENT_NAME)
-        .registeredDate(REGISTERED_DATE)
-        .expiryDate(EXPIRY_DATE)
-        .isEnabled(true)
-        .build();
   }
 }

@@ -64,6 +64,7 @@ public class ClientOrgService {
         .name(name)
         .registeredDate(registeredDate)
         .expiryDate(expiryDate)
+        .isEnabled(true)
         .build();
   }
 }

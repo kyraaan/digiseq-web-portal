@@ -1,6 +1,11 @@
 package com.digiseq.digiseqwebportal.controller;
 
 import static com.digiseq.digiseqwebportal.util.JsonLoader.loadJsonFromFile;
+import static com.digiseq.digiseqwebportal.util.TestDataHelper.CLIENT_ORG_ID;
+import static com.digiseq.digiseqwebportal.util.TestDataHelper.PERSONNEL_ID;
+import static com.digiseq.digiseqwebportal.util.TestDataHelper.addPersonnelRequest;
+import static com.digiseq.digiseqwebportal.util.TestDataHelper.personnel;
+import static com.digiseq.digiseqwebportal.util.TestDataHelper.updatePersonnelRequest;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
@@ -15,8 +20,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.digiseq.digiseqwebportal.configuration.PersonnelWebConfiguration;
-import com.digiseq.digiseqwebportal.controller.model.request.AddPersonnelRequest;
-import com.digiseq.digiseqwebportal.controller.model.request.UpdatePersonnelRequest;
 import com.digiseq.digiseqwebportal.exception.PersonnelNotFoundException;
 import com.digiseq.digiseqwebportal.model.Personnel;
 import com.digiseq.digiseqwebportal.service.PersonnelService;
@@ -34,8 +37,6 @@ class PersonnelControllerTest {
   private static final String PERSONNEL_URI_PATH = "/clientOrgs/{clientOrgId}/personnel";
   private static final String PERSONNEL_BY_ID_URI_PATH =
       "/clientOrgs/{clientOrgId}/personnel/{personnelId}";
-  private static final long CLIENT_ORG_ID = 123L;
-  private static final long PERSONNEL_ID = 234L;
 
   private static final String GET_PERSONNEL_SUCCESS_JSON =
       "responses/get-personnel-success-response.json";
@@ -146,16 +147,8 @@ class PersonnelControllerTest {
 
   @Test
   void shouldAddPersonnel() throws Exception {
-    var request =
-        AddPersonnelRequest.builder()
-            .firstName("fred")
-            .lastName("jones")
-            .username("fjones")
-            .password("password")
-            .email("fjones@email.com")
-            .phoneNumber("0123456789")
-            .clientOrgId("123")
-            .build();
+    var request = addPersonnelRequest();
+
     mvc.perform(
             post(PERSONNEL_URI_PATH, CLIENT_ORG_ID)
                 .contentType(APPLICATION_JSON)
@@ -181,15 +174,7 @@ class PersonnelControllerTest {
 
   @Test
   void shouldUpdatePersonnel() throws Exception {
-    var request =
-        UpdatePersonnelRequest.builder()
-            .firstName("fred")
-            .lastName("jones")
-            .username("fjones")
-            .password("password")
-            .email("fjones@email.com")
-            .phoneNumber("0123456789")
-            .build();
+    var request = updatePersonnelRequest();
 
     mvc.perform(
             patch(PERSONNEL_BY_ID_URI_PATH, CLIENT_ORG_ID, PERSONNEL_ID)
@@ -229,18 +214,5 @@ class PersonnelControllerTest {
 
   private static List<Personnel> personnelList() {
     return List.of(personnel());
-  }
-
-  private static Personnel personnel() {
-    return Personnel.builder()
-        .personnelId(PERSONNEL_ID)
-        .firstName("fred")
-        .lastName("jones")
-        .username("fjones")
-        .password("password")
-        .email("fjones@email.com")
-        .phoneNumber("0123456789")
-        .clientOrgId(CLIENT_ORG_ID)
-        .build();
   }
 }
