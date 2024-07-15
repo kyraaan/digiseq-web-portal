@@ -1,12 +1,12 @@
 package com.digiseq.digiseqwebportal.util;
 
-import static com.digiseq.digiseqwebportal.model.ClientOrgStatus.ACTIVE;
+import static com.digiseq.digiseqwebportal.clientorg.model.ClientOrgStatus.ACTIVE;
 
-import com.digiseq.digiseqwebportal.controller.model.request.AddPersonnelRequest;
-import com.digiseq.digiseqwebportal.controller.model.request.UpdatePersonnelRequest;
-import com.digiseq.digiseqwebportal.model.ClientOrg;
-import com.digiseq.digiseqwebportal.model.ClientOrgStatus;
-import com.digiseq.digiseqwebportal.model.Personnel;
+import com.digiseq.digiseqwebportal.clientorg.model.ClientOrg;
+import com.digiseq.digiseqwebportal.clientorg.model.ClientOrgStatus;
+import com.digiseq.digiseqwebportal.personnel.controller.model.request.AddPersonnelRequest;
+import com.digiseq.digiseqwebportal.personnel.controller.model.request.UpdatePersonnelRequest;
+import com.digiseq.digiseqwebportal.personnel.model.Personnel;
 import java.time.LocalDate;
 
 public class TestDataHelper {
